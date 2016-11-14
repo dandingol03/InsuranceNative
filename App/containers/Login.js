@@ -6,22 +6,22 @@ import React from 'react';
 
 
 var {
-    StyleSheet,
-    Text,
-    View,
-    Image,
-    TextInput,
-    TouchableHighlight,
-    Component,
-    ActivityIndicatorIOS
+    Component
 } = React;
 
 import {
+    Image,
     View,
     StyleSheet,
     Text,
+    TextInput,
+    TouchableHighlight,
+    ActivityIndicator
 } from 'react-native';
 
+import { connect } from 'react-redux';
+
+import {loginAction} from '../action/actionCreator';
 var Proxy = require('../proxy/Proxy');
 
 class Login extends Component
@@ -38,10 +38,11 @@ class Login extends Component
 
         return (
             <View style={styles.container}>
-                <Image style={styles.logo} source={require('image!Octocat')} />
+
                 <Text style={styles.heading}>
                     Github Browser
                 </Text>
+                <Image style={styles.logo} source={require('../img/Octocat.png')} />
                 <TextInput
                     onChangeText={(text) => this.setState({username: text})}
                     style={styles.input}
@@ -59,12 +60,13 @@ class Login extends Component
                     </Text>
                 </TouchableHighlight>
 
-
-
-                <ActivityIndicatorIOS
+                <ActivityIndicator
                     animating={this.state.showProgress}
+                    style={[styles.loader, {height: 80}]}
                     size="large"
-                    style={styles.loader} />
+                />
+
+
             </View>
         );
     }
@@ -74,24 +76,25 @@ class Login extends Component
         console.log('attempting to log in with username: ' + this.state.username);
         this.setState({showProgress: true});
 
+        const {dispatch} = this.props;
+        dispatch(loginAction);
+
         Proxy.get({
             headers: {
                 'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
             data: "grant_type=password&password=" + this.state.password + "&username=" + this.state.username
-        }).then(function(results){
-            this.setState({
-                showProgress: false,
-             accessToken:results});
-
-            // if(results.success && this.props.AckHandle) {
-            //     this.props.AckHandle();
-            // }
         });
     }
 
+    componentDidMount() {
+    }
+
 }
+export default connect(
+)(Login);
+
 
 
 
@@ -113,7 +116,7 @@ var styles = StyleSheet.create({
     },
     input: {
         height: 50,
-        marginTop: 10,
+        marginTop: 30,
         padding: 4,
         fontSize: 18,
         borderWidth: 1,
@@ -142,6 +145,3 @@ var styles = StyleSheet.create({
         fontWeight: 'bold'
     }
 });
-
-
-module.exports=Login;

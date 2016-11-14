@@ -1,6 +1,6 @@
 
 
-import * as types from '../Action/actionTypes';
+import * as types from '../action/types';
 
 const initialState = {
     accessToken: null,
@@ -15,7 +15,8 @@ let user = (state = initialState, action) => {
         case types.ACCESS_TOKEN_ACK:
 
             return Object.assign({}, state, {
-                accessToken: action.accessToken
+                accessToken: action.accessToken,
+                validate:action.validate
             })
         default:
             return state;

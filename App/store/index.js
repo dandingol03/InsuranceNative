@@ -3,7 +3,7 @@
  */
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
-import reducer from '../Reducers/index';
+import reducer from '../reducers/index';
 
 const middlewares = [thunk];
 const createLogger = require('redux-logger');
@@ -15,6 +15,6 @@ if (process.env.NODE_ENV === 'development') {
 const createStoreWithMiddleware = applyMiddleware(...middlewares)(createStore);
 
 let store = createStoreWithMiddleware(reducer);
-export default store;
+module.exports= store;
 
 

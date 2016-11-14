@@ -6,10 +6,10 @@ import {
     Text,
 } from 'react-native';
 
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 
-import StatusBarIOS from '../Components/StatusBarIOS';
-
-
+import StatusBarIOS from '../components/StatusBarIOS';
 import Dashboard from '../containers/Dashboard';
 import Login from '../containers/Login';
 
@@ -18,15 +18,11 @@ class App extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-                auth: false
-        };
     }
 
-
     render() {
-
-        if(this.state.auth)
+        let auth=this.props.auth;
+        if(auth==true)
         {
             return (
                 <View style={{ flex: 1 }}>
@@ -56,4 +52,9 @@ class App extends React.Component {
     }
 }
 
-export default App;
+export default connect(
+    (state) => ({
+        auth: state.user.auth
+    })
+)(App);
+

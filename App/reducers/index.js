@@ -3,12 +3,12 @@
  * 根reducer
  */
 import { combineReducers } from 'redux';
-//添加个页面的reducer并进行合并
-import DashboardReducer from './dashboard';
-import LoginReducer from './login';
+
+import carInfo from './carInfo';
+import user from './user';
 
 export default rootReducer = combineReducers({
-    DashboardReducer,
-    LoginReducer
+    carInfo,
+    user
 })
 

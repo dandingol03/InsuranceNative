@@ -1,6 +1,6 @@
 
 
-import * as types from '../Action/actionTypes';
+import * as types from '../action/types';
 
 const initialState = {
     bindList: [],
