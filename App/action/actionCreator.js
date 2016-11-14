@@ -8,24 +8,34 @@ import * as types from './types';
 var Proxy = require('../proxy/Proxy');
 
 
-export let loginAction=(username,password)=>{
+export let loginAction=function(username,password){
 
-   return dispatch =>{
+    return dispatch=>{
 
-       return    Proxy.get({
-           headers: {
-               'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-               'Content-Type': 'application/x-www-form-urlencoded'
-           },
-           data: "grant_type=password&password=" + this.state.password + "&username=" + this.state.username
-       }).then(function(res) {
-           var accessToken=res.access_token;
-           dispath(getAccessToken(accessToken));
-       }).catch(function(err) {
-           dispath(getAccessToken(null));
-       });
-   };
+        dispatch(onOauth());
 
+        Proxy.post({
+            url:'http://192.168.1.138:3000/login',
+            headers: {
+                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: "grant_type=password&password=" + password + "&username=" + username
+        },(res)=> {
+            var accessToken=res.access_token;
+            dispatch(getAccessToken(accessToken));
+        }, (err) =>{
+                dispatch(getAccessToken(null));
+            });
+    };
+
+
+}
+
+let onOauth= () => {
+    return {
+        type:types.AUTH_BY_OAUTH
+    };
 }
 
 let getAccessToken= (accessToken)=>{
@@ -33,7 +43,8 @@ let getAccessToken= (accessToken)=>{
         return {
             type: types.ACCESS_TOKEN_ACK,
             accessToken: accessToken,
-            auth:true
+            auth:true,
+            validate:true
         };
     else
         return {

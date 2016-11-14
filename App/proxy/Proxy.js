@@ -14,7 +14,7 @@ let Proxy={
 
             var options={
                 method:'GET',
-                headers:params.header!==undefined&&params.header!==null?params.header:null,
+                headers:params.headers!==undefined&&params.headers!==null?params.headers:null,
                 cache:'default'
             };
             return new Promise((resolve,reject) => {
@@ -32,27 +32,25 @@ let Proxy={
             throw new Error('lack of url field');
         }
     },
-    post:(params)=>{
+    post:(params,success,fail)=>{
         var url=params.url;
         if(url!==undefined&&url!==null)
         {
 
             var options={
                 method:'POST',
-                headers:params.header!==undefined&&params.header!==null?params.header:null,
-                cache:'default'
+                headers:params.headers!==undefined&&params.headers!==null?params.headers:null,
+                cache:'default',
+                body:params.body
             };
-            return new Promise((resolve,reject) => {
+
                 fetch(url,options)
                     .then((response) => response.text())
-                    .then((responseText) => {
-                        resolve(JSON.parse(responseText));
+                    .then((res) => {
+                        success(JSON.parse(res));
                     })
-                    .catch((err) => {
-                        reject(new Error(err));
-                        console.warn(err);
-                    }).done();
-            });
+                    .done();
+
         }else{
             throw new Error('lack of url field');
         }
@@ -64,7 +62,7 @@ let Proxy={
 
             var options={
                 method:params.method!==undefined&&params.method!==null?params.method:'GET',
-                headers:params.header!==undefined&&params.header!==null?params.header:null,
+                headers:params.headers!==undefined&&params.headers!==null?params.headers:null,
                 cache:'default'
             };
             return new Promise((resolve,reject) => {

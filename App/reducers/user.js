@@ -16,7 +16,8 @@ let user = (state = initialState, action) => {
 
             return Object.assign({}, state, {
                 accessToken: action.accessToken,
-                validate:action.validate
+                validate:action.validate,
+                auth:action.auth
             })
         default:
             return state;

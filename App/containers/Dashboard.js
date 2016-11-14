@@ -11,9 +11,27 @@ import {
 
 class Dashboard extends React.Component
 {
-    render(){
 
+    constructor(props) {
+        super(props);
+    }
+
+    render(){
+        return (
+            <View style={{ flex: 1 ,alignItems:'center',justifyContent:'center'}}>
+                <Text style={styles.heading}>
+                    welcome aboard
+                </Text>
+            </View>);
     }
 }
+
+var styles = StyleSheet.create({
+    heading: {
+        fontSize: 30,
+        marginTop: 10
+    }
+});
+
 
 export default Dashboard;

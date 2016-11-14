@@ -77,15 +77,8 @@ class Login extends Component
         this.setState({showProgress: true});
 
         const {dispatch} = this.props;
-        dispatch(loginAction);
+        dispatch(loginAction(this.state.username,this.state.password));
 
-        Proxy.get({
-            headers: {
-                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            data: "grant_type=password&password=" + this.state.password + "&username=" + this.state.username
-        });
     }
 
     componentDidMount() {
