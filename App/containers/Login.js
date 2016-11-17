@@ -16,14 +16,14 @@ import {
     Text,
     TextInput,
     TouchableHighlight,
-    ActivityIndicator
+    ActivityIndicator,
+    TabBarIOS
 } from 'react-native';
 
 import { connect } from 'react-redux';
 
 import {loginAction} from '../action/actionCreator';
 var Proxy = require('../proxy/Proxy');
-
 class Login extends Component
 {
     constructor(props) {
@@ -43,28 +43,39 @@ class Login extends Component
                     Github Browser
                 </Text>
                 <Image style={styles.logo} source={require('../img/Octocat.png')} />
-                <TextInput
-                    onChangeText={(text) => this.setState({username: text})}
-                    style={styles.input}
-                    placeholder="input username" />
-                <TextInput
-                    onChangeText={(text) => this.setState({password: text})}
-                    style={styles.input}
-                    placeholder="input password"
-                    secureTextEntry="true" />
-                <TouchableHighlight
-                    onPress={this.onLoginPressed.bind(this)}
-                    style={styles.button}>
-                    <Text style={styles.buttonText}>
-                        登录
-                    </Text>
-                </TouchableHighlight>
+
+                <View style={{justifyContent:'center',alignItems:'center'}}>
+                    <TextInput
+                        onChangeText={(text) => this.setState({username: text})}
+                        style={styles.input}
+                        placeholder="input username" />
+                </View>
+
+                <View style={{justifyContent:'center',alignItems:'center'}}>
+                    <TextInput
+                        onChangeText={(text) => this.setState({password: text})}
+                        style={styles.input}
+                        placeholder="input password"
+                        secureTextEntry={true} />
+                </View>
+
+                <View style={{justifyContent:'center',alignItems:'center'}}>
+                    <TouchableHighlight
+                        onPress={this.onLoginPressed.bind(this)}
+                        style={styles.button}>
+                        <Text style={styles.buttonText}>
+                            登录
+                        </Text>
+                    </TouchableHighlight>
+                </View>
 
                 <ActivityIndicator
                     animating={this.state.showProgress}
                     style={[styles.loader, {height: 80}]}
                     size="large"
                 />
+
+
 
 
             </View>
@@ -100,24 +111,27 @@ var styles = StyleSheet.create({
         padding: 10
     },
     logo: {
-        width: 66,
-        height: 55
+        width: 160,
+        height: 200
     },
     heading: {
         fontSize: 30,
         marginTop: 10
     },
     input: {
-        height: 50,
-        marginTop: 30,
+        width:240,
+        justifyContent:'center',
+        height: 36,
+        marginTop: 10,
         padding: 4,
-        fontSize: 18,
+        fontSize: 12,
         borderWidth: 1,
         borderColor: '#48bbec',
         color: '#48bbec'
     },
     button: {
-        height: 50,
+        width:240,
+        height: 40,
         backgroundColor: '#48bbec',
         alignSelf: 'stretch',
         marginTop: 10,

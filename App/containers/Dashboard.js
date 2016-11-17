@@ -9,14 +9,10 @@ import {
     Text,
 } from 'react-native';
 
-class Dashboard extends React.Component
-{
 
-    constructor(props) {
-        super(props);
-    }
+var  Dashboard = React.createClass({
 
-    render(){
+    render:function () {
         return (
             <View style={{ flex: 1 ,alignItems:'center',justifyContent:'center'}}>
                 <Text style={styles.heading}>
@@ -24,7 +20,8 @@ class Dashboard extends React.Component
                 </Text>
             </View>);
     }
-}
+});
+
 
 var styles = StyleSheet.create({
     heading: {
@@ -34,4 +31,4 @@ var styles = StyleSheet.create({
 });
 
 
-export default Dashboard;
+module.exports= Dashboard;
