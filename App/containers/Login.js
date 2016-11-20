@@ -21,24 +21,42 @@ import {
 } from 'react-native';
 
 import { connect } from 'react-redux';
+var t=require('tcomb-form-native');
+var Form = t.form.Form;
+
+var Person = t.struct({
+    'username': t.String,              // a required string
+    'password': t.String,  // an optional string
+    rememberMe: t.Boolean        // a boolean
+});
+
+var options = {};
 
 import {loginAction} from '../action/actionCreator';
 var Proxy = require('../proxy/Proxy');
-class Login extends Component
-{
-    constructor(props) {
-        super(props);
 
-        this.state = {
-            showProgress: false
-        };
-    }
 
-    render(){
+var  Login =React.createClass({
+    onLoginPressed:function () {
+        console.log('attempting to log in with username: ' + this.state.username);
+        this.setState({showProgress: true});
+        const {dispatch} = this.props;
 
-        return (
+        dispatch(loginAction(this.state.username,this.state.password));
+    },
+    onPress:function () {
+        var form = this.refs.form.getValue();
+        console.log('struct=\r\n'+form);
+        this.setState({showProgress: true});
+        const {dispatch} = this.props;
+        dispatch(loginAction(form.username,form.password));
+    },
+    getInitialState:function(){
+        return ({showPregress: true});
+    },
+    render:function () {
+        var t1=
             <View style={styles.container}>
-
                 <Text style={styles.heading}>
                     Github Browser
                 </Text>
@@ -61,7 +79,7 @@ class Login extends Component
 
                 <View style={{justifyContent:'center',alignItems:'center'}}>
                     <TouchableHighlight
-                        onPress={this.onLoginPressed.bind(this)}
+                        onPress={this.onLoginPressed}
                         style={styles.button}>
                         <Text style={styles.buttonText}>
                             登录
@@ -74,28 +92,24 @@ class Login extends Component
                     style={[styles.loader, {height: 80}]}
                     size="large"
                 />
-
-
-
-
+            </View>;
+        return (
+            <View style={styles.container}>
+                <Form
+                    ref="form"
+                    type={Person}
+                    options={options}
+                />
+                <TouchableHighlight style={styles.button} onPress={this.onPress} underlayColor='#99d9f4'>
+                    <Text style={styles.buttonText}>Save</Text>
+                </TouchableHighlight>
             </View>
         );
-    }
-
-    onLoginPressed() {
-
-        console.log('attempting to log in with username: ' + this.state.username);
-        this.setState({showProgress: true});
-
-        const {dispatch} = this.props;
-        dispatch(loginAction(this.state.username,this.state.password));
 
     }
+});
 
-    componentDidMount() {
-    }
 
-}
 export default connect(
 )(Login);
 
@@ -104,11 +118,10 @@ export default connect(
 
 var styles = StyleSheet.create({
     container: {
-        flex: 1,
-        paddingTop: 40,
-        alignItems: 'center',
-        backgroundColor: '#F5FCFF',
-        padding: 10
+        justifyContent: 'center',
+        marginTop: 50,
+        padding: 20,
+        backgroundColor: '#ffffff'
     },
     logo: {
         width: 160,
@@ -129,18 +142,24 @@ var styles = StyleSheet.create({
         borderColor: '#48bbec',
         color: '#48bbec'
     },
+    title: {
+        fontSize: 30,
+        alignSelf: 'center',
+        marginBottom: 30
+    },
     button: {
-        width:240,
-        height: 40,
-        backgroundColor: '#48bbec',
+        height: 36,
+        backgroundColor: '#48BBEC',
+        borderColor: '#48BBEC',
+        borderWidth: 1,
+        borderRadius: 8,
+        marginBottom: 10,
         alignSelf: 'stretch',
-        marginTop: 10,
-        justifyContent: 'center',
-        borderRadius: 5
+        justifyContent: 'center'
     },
     buttonText: {
-        fontSize: 22,
-        color: '#fff',
+        fontSize: 18,
+        color: 'white',
         alignSelf: 'center'
     },
     loader: {

@@ -3,7 +3,8 @@ import {
     View,
     StyleSheet,
     Text,
-    TabBarIOS
+    TabBarIOS,
+    Navigator
 } from 'react-native';
 
 
@@ -16,9 +17,15 @@ import Login from '../containers/Login';
 
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import ScrollableTabView, {DefaultTabBar, ScrollableTabBar} from 'react-native-scrollable-tab-view';
-import Swiper from 'react-native-swiper';
+import Home from './Home';
+import Me from './Me';
+import GaHome from './GaHome';
+import GaOrder from './GaOrder';
+
+
 const tabBarTintColor = '#f8f8f8';// 标签栏的背景颜色
 const tabTintColor = '#3393F2'; // 被选中图标颜色
+
 
 
 class App extends React.Component {
@@ -31,6 +38,25 @@ class App extends React.Component {
     }
 
     _createTabbarItem(route,icon){
+
+        var component=Home;
+        switch (route) {
+            case 'me':
+             component=Me;
+                break;
+            case 'product':
+                break;
+            case 'ga':
+                component=GaHome;
+                break;
+            case 'gaOrder':
+                component=GaOrder;
+                break;
+            default:
+                break;
+        }
+
+
         return (
 
             <FontAwesome.TabBarItem
@@ -43,38 +69,15 @@ class App extends React.Component {
                             tab: route,
                         });
                     }}>
-                <View style={styles.container}>
-
-
-                        <ScrollableTabView
-                            style={{marginTop:20}}
-                            renderTabBar={() => <DefaultTabBar />}
-                        >
-                            <View tabLabel="tab1" style={{flex:1,alignItems:'center',justifyContent:'center'}}>
-
-                                <Swiper style={styles.wrapper} showButtons={true}>
-                                    <View style={styles.slide1}>
-                                        <Text style={styles.text}>slide 1</Text>
-                                    </View>
-                                    <View style={styles.slide2}>
-                                        <Text style={styles.text}>slide 2</Text>
-                                    </View>
-                                    <View style={styles.slide3}>
-                                        <Text style={styles.text}>slide 3</Text>
-                                    </View>
-                                </Swiper>
-
-
-                            </View>
-                            <View tabLabel="tab2" style={{flex:1,alignItems:'center',justifyContent:'center'}}>
-                                <Text tabLabel="tab 2" >tab 2</Text>
-                            </View>
-                            <View tabLabel="tab3" style={{flex:1,alignItems:'center',justifyContent:'center'}}>
-                                <Text tabLabel="tab 3" >tab 3</Text>
-                            </View>
-                        </ScrollableTabView>
-
-                </View>
+                <Navigator
+                    initialRoute={{ name: 'home', component:component }}
+                    configureScene={(route) => {
+                        return Navigator.SceneConfigs.HorizontalSwipeJumpFromRight;
+                      }}
+                    renderScene={(route, navigator) => {
+                        let Component = route.component;
+                        return <Component {...route.params} navigator={navigator} />
+                      }} />
             </FontAwesome.TabBarItem>
         );
 
@@ -93,6 +96,8 @@ class App extends React.Component {
                     barTintColor={tabBarTintColor}>
                     {this._createTabbarItem('product','dribbble')}
                     {this._createTabbarItem('me','trophy')}
+                    {this._createTabbarItem('ga','meetup')}
+                    {this._createTabbarItem('gaOrder','list-alt')}
                 </TabBarIOS>
             );
         }else{
@@ -107,9 +112,16 @@ var styles = StyleSheet.create({
         marginTop: 10
     },
     container:{
-        flex: 1 ,
+        flex: 1,
         alignItems:'center',
-        justifyContent:'center'
+        marginTop:60
+    },
+    text: {
+        flex:1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize:16,
+        textAlign:'center'
     },
     wrapper:{
 
@@ -131,11 +143,6 @@ var styles = StyleSheet.create({
         justifyContent:'center',
         alignItems:'center',
         backgroundColor:'#92BBD9'
-    },
-    text:{
-        color:'#fff',
-        fontSize:30,
-        fontWeight:'bold'
     }
 });
 
