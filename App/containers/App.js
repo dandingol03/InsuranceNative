@@ -21,7 +21,7 @@ import Home from './Home';
 import Me from './Me';
 import GaHome from './GaHome';
 import GaOrder from './GaOrder';
-
+import dym from './dym';
 
 const tabBarTintColor = '#f8f8f8';// 标签栏的背景颜色
 const tabTintColor = '#3393F2'; // 被选中图标颜色
@@ -51,6 +51,10 @@ class App extends React.Component {
                 break;
             case 'gaOrder':
                 component=GaOrder;
+                break;
+
+            case 'dym':
+                component=dym;
                 break;
             default:
                 break;
@@ -98,6 +102,7 @@ class App extends React.Component {
                     {this._createTabbarItem('me','trophy')}
                     {this._createTabbarItem('ga','meetup')}
                     {this._createTabbarItem('gaOrder','list-alt')}
+                    {this._createTabbarItem('dym','list-alt')}
                 </TabBarIOS>
             );
         }else{
