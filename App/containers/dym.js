@@ -14,6 +14,7 @@ import  {
 } from 'react-native';
 
 import { connect } from 'react-redux';
+import ScrollableTabView, {DefaultTabBar, ScrollableTabBar} from 'react-native-scrollable-tab-view';
 
 var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
@@ -33,9 +34,36 @@ class dym extends Component{
                     <Image style={styles.thumb} source={ require('../images/banner.png')}/>
                 </View>
                 <View style={{flex:2}}>
-                    <Text>
-                        试一试
-                    </Text>
+                    <ScrollableTabView
+                        renderTabBar={() => <DefaultTabBar/>}
+                        tabBarUnderlineColor='#FF0000'
+                        tabBarBackgroundColor='#FFFFFF'
+                        tabBarActiveTextColor='#9B30FF'
+                        tabBarInactiveTextColor='#7A67EE'
+                        tabBarTextStyle={{fontSize: 18}}
+                    >
+                        <View tabLabel='Tab1'>
+                            <carInsurance>
+                                tab1
+                            </carInsurance>
+                        </View>
+                        <View tabLabel="Tab2">
+                            <Text>
+                                tab2
+                            </Text>
+                        </View>
+                        <View tabLabel="Tab3">
+                            <Text>
+                                tab3
+                            </Text>
+                        </View>
+                        <View tabLabel="Tab4">
+                            <Text>
+                                tab4
+                            </Text>
+                        </View>
+
+                    </ScrollableTabView>
                 </View>
 
             </View>
@@ -54,6 +82,11 @@ var styles = StyleSheet.create({
         width:width,
         height:height/3
     }
+
+
+
+
+
 });
 
 
