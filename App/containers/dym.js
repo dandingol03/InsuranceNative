@@ -28,7 +28,8 @@ var {height, width} = Dimensions.get('window');
 class dym extends Component{
     constructor(props) {
         super(props);
-        this.state = {};}
+        this.state = {};
+    }
 
     carSelect(){
 
