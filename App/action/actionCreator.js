@@ -15,7 +15,7 @@ export let loginAction=function(username,password){
         dispatch(onOauth());
 
         Proxy.post({
-            url:'http://192.168.3.2:3000/login',
+            url:'http://192.168.1.121:3000/login',
             headers: {
                 'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                 'Content-Type': 'application/x-www-form-urlencoded'

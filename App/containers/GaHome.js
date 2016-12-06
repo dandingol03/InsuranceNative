@@ -15,7 +15,7 @@ import{
 } from 'react-native';
 import { connect } from 'react-redux';
 import {IndicatorViewPager, PagerDotIndicator} from 'rn-viewpager';
-import ShortLine from '../components/ShortLine';
+    import ShortLine from '../components/ShortLine';
 
 
 
