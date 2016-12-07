@@ -12,13 +12,17 @@ import  {
     View,
     ListView,
     Alert,
-    TouchableOpacity
+    TouchableOpacity,
+    Dimensions,
+    Modal,
+    TouchableHighlight
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 var Proxy = require('../proxy/Proxy');
 import { connect } from 'react-redux';
-
+import NewCarBind from './modal/NewCarBind';
+var {height, width} = Dimensions.get('window');
 
 class CarManage extends Component{
 
@@ -27,6 +31,14 @@ class CarManage extends Component{
         if(navigator) {
             navigator.pop();
         }
+    }
+
+    createNewCar(){
+        
+    }
+
+    setModalVisible(visible) {
+        this.setState({modalVisible: visible});
     }
 
     fetchData(){
@@ -86,7 +98,7 @@ class CarManage extends Component{
     {
         super(props);
         const { accessToken } = this.props;
-        this.state = {accessToken: accessToken};
+        this.state = {accessToken: accessToken,modalVisible:false};
     }
 
     render(){
@@ -123,13 +135,33 @@ class CarManage extends Component{
                         <Icon name="plus-square" size={30} color="#00f" />
                     </View>
                 </View>
+                <Modal
+                    animationType={"slide"}
+                    transparent={false}
+                    visible={this.state.modalVisible}
+                    onRequestClose={() => {alert("Modal has been closed.")}}
+                >
+
+                    <NewCarBind onClose={()=>{
+                        this.setModalVisible(!this.state.modalVisible)
+                    }}/>
+
+                </Modal>
                 <View style={{flex:4,padding:15}}>
                     {listView}
                 </View>
-                <View style={{flex:1,padding:16,height:60,flex:1}}>
-                    <Icon.Button name="hand-o-up" backgroundColor="#3b5998">
-                        <Text style={{fontFamily: 'Arial', fontSize: 15}}>创建新车</Text>
-                    </Icon.Button>
+                <View style={{flex:1,padding:16,height:60,flexDirection:'row',justifyContent:'center'}}>
+                    <View style={{width:width/3}}>
+                        <Icon.Button name="hand-o-up" backgroundColor="#3b5998" onPress={
+                            ()=>{
+                                this.setModalVisible(true);
+                            }
+                        }>
+                            <Text style={{fontFamily: 'Arial', fontSize: 15,textAlign:'center'}}>
+                                创建新车
+                            </Text>
+                        </Icon.Button>
+                    </View>
                 </View>
             </View>);
     }
