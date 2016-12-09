@@ -5,6 +5,7 @@
 
 
 import * as types from './types';
+import Config from '../../config';
 var Proxy = require('../proxy/Proxy');
 
 
@@ -15,7 +16,7 @@ export let loginAction=function(username,password){
         dispatch(onOauth());
 
         Proxy.post({
-            url:'http://192.168.1.148:3000/login',
+            url:Config.server+'/login',
             headers: {
                 'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                 'Content-Type': 'application/x-www-form-urlencoded'

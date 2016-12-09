@@ -65,25 +65,7 @@ class AppendCarNumPrefixModal extends Component{
                 </View>
 
                 <View style={styles.body}>
-                    <View style={styles.row}>
-                        <View style={{marginRight:10}}>
-                            <Icon name="map-marker" size={24}/>
-                        </View>
-                        <View style={{flex:2,flexDirection:'row',alignItems:'flex-end'}}>
-                            <Text style={{'fontSize':16}}>用车城市:</Text>
-                        </View>
-                        <View style={{flex:2}}>
-                            <Text>{this.state.city}</Text>
-                        </View>
-                        <View style={{flex:1}}>
-                            <TouchableOpacity onPress={
-                            ()=>{
-                                this.close();
-                            }}>
-                                <Icon name="chevron-right" size={24}></Icon>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
+
                 </View>
 
 

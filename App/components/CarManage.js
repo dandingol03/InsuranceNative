@@ -22,7 +22,9 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 var Proxy = require('../proxy/Proxy');
 import { connect } from 'react-redux';
 import NewCarBind from './modal/NewCarBind';
+import Config from '../../config';
 var {height, width} = Dimensions.get('window');
+
 
 class CarManage extends Component{
 
@@ -43,7 +45,7 @@ class CarManage extends Component{
 
     fetchData(){
         Proxy.post({
-            url:'http://192.168.1.148:3000/svr/request',
+            url:Config.server+'/svr/request',
             headers: {
                 'Authorization': "Bearer " + this.state.accessToken,
                 'Content-Type': 'application/json'
