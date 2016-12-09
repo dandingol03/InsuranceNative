@@ -71,7 +71,7 @@ class App extends React.Component {
 
             <TabNavigator.Item
                 selected={this.state.selectedTab === route}
-                title="Home"
+                title={route}
                 renderIcon={() => <Icon name={icon} size={25}/>}
                 renderSelectedIcon={() => <Icon name={icon} size={25} color='#00f' />}
                 onPress={() => this.setState({ selectedTab: route })}>
@@ -165,7 +165,7 @@ class App extends React.Component {
                     {this._createNavigatorItem('me','trophy')}
                     {this._createNavigatorItem('ga','meetup')}
                     {this._createNavigatorItem('gaOrder','list-alt')}
-                    {this._createNavigatorItem('dym','list-alt')}
+                    {this._createNavigatorItem('dym','car')}
                 </TabNavigator>
             );
         }else{
