@@ -12,11 +12,15 @@ import { connect } from 'react-redux';
 
 import StatusBarIOS from '../components/StatusBarIOS';
 import Tab from '../containers/Tab';
+import TabNavigator from 'react-native-tab-navigator';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import Login from '../containers/Login';
 
 
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+
 import ScrollableTabView, {DefaultTabBar, ScrollableTabBar} from 'react-native-scrollable-tab-view';
+
 import Home from './Home';
 import Me from './Me';
 import GaHome from './GaHome';
@@ -33,8 +37,56 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.state={
-            tab:'product'
+            tab:'product',
+            selectedTab:'product'
         }
+    }
+
+    _createNavigatorItem(route,icon)
+    {
+
+        var component=Home;
+        switch (route) {
+            case 'me':
+                component=Me;
+                break;
+            case 'product':
+                break;
+            case 'ga':
+                component=GaHome;
+                break;
+            case 'gaOrder':
+                component=GaOrder;
+                break;
+
+            case 'dym':
+                component=dym;
+                break;
+            default:
+                break;
+        }
+
+
+        return (
+
+            <TabNavigator.Item
+                selected={this.state.selectedTab === route}
+                title="Home"
+                renderIcon={() => <Icon name={icon} size={25}/>}
+                renderSelectedIcon={() => <Icon name={icon} size={25} color='#00f' />}
+                onPress={() => this.setState({ selectedTab: route })}>
+                <Navigator
+                    initialRoute={{ name: route, component:component }}
+                    configureScene={(route) => {
+                        return Navigator.SceneConfigs.HorizontalSwipeJumpFromRight;
+                      }}
+                    renderScene={(route, navigator) => {
+                        let Component = route.component;
+                        return <Component {...route.params} navigator={navigator} />
+                      }} />
+            </TabNavigator.Item>
+        );
+
     }
 
     _createTabbarItem(route,icon){
@@ -93,7 +145,8 @@ class App extends React.Component {
         let auth=this.props.auth;
         if(auth==true)
         {
-            return (
+
+            var TabBarIOS=
                 <TabBarIOS
                     ref='tabbar'
                     tintColor={tabTintColor}
@@ -103,7 +156,17 @@ class App extends React.Component {
                     {this._createTabbarItem('ga','meetup')}
                     {this._createTabbarItem('gaOrder','list-alt')}
                     {this._createTabbarItem('dym','list-alt')}
-                </TabBarIOS>
+                </TabBarIOS>;
+
+
+            return (
+                <TabNavigator>
+                    {this._createNavigatorItem('product','home')}
+                    {this._createNavigatorItem('me','trophy')}
+                    {this._createNavigatorItem('ga','meetup')}
+                    {this._createNavigatorItem('gaOrder','list-alt')}
+                    {this._createNavigatorItem('dym','list-alt')}
+                </TabNavigator>
             );
         }else{
             return (<Login/>);
