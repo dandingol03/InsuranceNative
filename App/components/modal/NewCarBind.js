@@ -18,6 +18,8 @@ import  {
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 
+
+
 var {height, width} = Dimensions.get('window');
 
 
@@ -42,7 +44,7 @@ class NewCarBind extends Component{
 
     fetchData(){
         Proxy.post({
-            url:'http://192.168.1.121:3000/svr/request',
+            url:'/svr/request',
             headers: {
                 'Authorization': "Bearer " + this.state.accessToken,
                 'Content-Type': 'application/json'
@@ -128,7 +130,7 @@ class NewCarBind extends Component{
                             <Icon name="map-marker" size={24}/>
                         </View>
                         <View style={{flex:2}}>
-                            <Text style={{'fontSize':16}}>用车城市</Text>
+                            <Text style={{'fontSize':16}}>用车城市:</Text>
                         </View>
                         <View style={{flex:2}}>
                             <Text>{this.state.city}</Text>
@@ -142,8 +144,32 @@ class NewCarBind extends Component{
                             </TouchableOpacity>
                         </View>
                     </View>
+
+                    <View style={styles.row}>
+                        <View style={{marginRight:20}}>
+                            <Icon name="address-card-o" size={24}/>
+                        </View>
+                        <View style={{flex:2}}>
+                            <Text style={{'fontSize':16}}>车牌:</Text>
+                        </View>
+                        <View style={{flex:2}}>
+                            <Text>{this.state.carNum}</Text>
+                        </View>
+                    </View>
                 </View>
 
+                <Modal
+                    animationType={"slide"}
+                    transparent={false}
+                    visible={this.state.carNumPrefixModal}
+                    onRequestClose={() => {alert("Modal has been closed.")}}
+                >
+
+                    <AppendCarNumPrefixModal onClose={()=>{
+                        this.appendCarNumPrefixByCity(!this.state.carNumPrefixModal)
+                    }}/>
+
+                </Modal>
 
 
             </View>
