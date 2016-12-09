@@ -37,6 +37,9 @@ let Proxy={
         if(url!==undefined&&url!==null)
         {
 
+            if(Object.prototype.toString.call(params.body)=='[object Object]')
+                params.body = JSON.stringify(params.body);
+
             var options={
                 method:'POST',
                 headers:params.headers!==undefined&&params.headers!==null?params.headers:null,

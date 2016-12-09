@@ -45,67 +45,65 @@ class dym extends Component{
                 }
             })
         }
-
     }
 
     render() {
-        return (
-            <View style={styles.container}>
-                <View style={{flex:1}}>
-                    <Image style={styles.thumb} source={ require('../images/banner.png')}/>
+
+        var scrollTab=
+            <ScrollableTabView
+                style={{marginTop: 20, }}
+                initialPage={1}
+                renderTabBar={() => <FacebookTabBar />}
+                >
+            <ScrollView tabLabel="ios-paper" style={styles.tabView}>
+                <View style={styles.title}>
+                    <Text style={{'fontWeight':'bold',color:'#222'}}>选择车辆</Text>
                 </View>
-                <View style={{flex:2}}>
 
-                    <ScrollableTabView
-                        style={{marginTop: 20, }}
-                        initialPage={1}
-                        renderTabBar={() => <FacebookTabBar />}
-                        >
-                        <ScrollView tabLabel="ios-paper" style={styles.tabView}>
-                            <View style={styles.title}>
-                                <Text style={{'fontWeight':'bold',color:'#222'}}>选择车辆</Text>
-                            </View>
-                            <View style={{flex:2,padding:10,justifyContent:'center'}}>
-                                <View style={{borderBottomWidth:1,borderBottomColor:'#222',flexDirection:'row'}}>
-                                    <View style={{flex:3,paddingTop:8,justifyContent:'center',
+                <View style={{flex:2,padding:10,justifyContent:'center'}}>
+                    <View style={{borderBottomWidth:1,borderBottomColor:'#222',flexDirection:'row'}}>
+                        <View style={{flex:3,paddingTop:8,justifyContent:'center',
                                     flexDirection:'row',paddingBottom:4,alignItems:'flex-end'}}>
-                                        <Text>车牌:</Text>
-                                    </View>
-                                    <View style={{flex:3}}>
+                            <Text>车牌:</Text>
+                        </View>
+                        <View style={{flex:3}}>
 
-                                    </View>
+                        </View>
 
-                                    <View style={{flex:4,justifyContent:'center'}}>
+                        <View style={{flex:4,justifyContent:'center'}}>
 
-                                        <Icon.Button name="automobile" backgroundColor="#3b5998" padding={4} onPress={()=>{
+                            <Icon.Button name="automobile" backgroundColor="#3b5998" padding={4} onPress={()=>{
                                         this.carSelect();
                                                 }}>
-                                            选择车辆
-                                        </Icon.Button>
+                                选择车辆
+                            </Icon.Button>
 
-                                    </View>
+                        </View>
 
-                                </View>
-                            </View>
-                        </ScrollView>
-                        <ScrollView tabLabel="ios-people" style={styles.tabView}>
-                            <View style={styles.card}>
-                                <Text>Friends</Text>
-                            </View>
-                        </ScrollView>
-                        <ScrollView tabLabel="ios-chatboxes" style={styles.tabView}>
-                            <View style={styles.card}>
-                                <Text>Messenger</Text>
-                            </View>
-                        </ScrollView>
-                        <ScrollView tabLabel="ios-notifications" style={styles.tabView}>
-                            <View style={styles.card}>
-                                <Text>Notifications</Text>
-                            </View>
-                        </ScrollView>
-                    </ScrollableTabView>
+                    </View>
                 </View>
+            </ScrollView>
+            <ScrollView tabLabel="ios-people" style={styles.tabView}>
+                <View style={styles.card}>
+                    <Text>Friends</Text>
+                </View>
+            </ScrollView>
+            <ScrollView tabLabel="ios-chatboxes" style={styles.tabView}>
+                <View style={styles.card}>
+                    <Text>Messenger</Text>
+                </View>
+            </ScrollView>
+            <ScrollView tabLabel="ios-notifications" style={styles.tabView}>
+                <View style={styles.card}>
+                    <Text>Notifications</Text>
+                </View>
+            </ScrollView>
+        </ScrollableTabView>;
 
+        return (
+            <View style={styles.container}>
+                    <Image style={styles.thumb} source={ require('../images/banner.png')}/>
+                {scrollTab}
             </View>
         )
 
@@ -114,9 +112,7 @@ class dym extends Component{
 
 var styles = StyleSheet.create({
     container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
+        flex: 1
     },
     tabContainer:{
         marginTop: 30

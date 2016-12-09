@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   tabs: {
-    height: 65,
+    height: 80,
     flexDirection: 'row',
     paddingTop: 5,
     borderWidth: 1,
@@ -124,7 +124,6 @@ const styles = StyleSheet.create({
   icon: {
     width: 50,
     height:50,
-
   }
 });
 
