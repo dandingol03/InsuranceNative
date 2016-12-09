@@ -32,16 +32,29 @@ class AppendCarNumPrefixModal extends Component{
     constructor(props)
     {
         super(props);
+        var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         this.state={
             city:null,
+            dataSource:ds.cloneWithRows(['济南','青岛','淄博','枣庄','东营','烟台','潍坊','济宁','泰安','威海','日照','滨州','德州','聊城','临沂','菏泽','莱芜'])
         }
+    }
+
+
+    renderRow(rowData)
+    {
+      return  (
+          <View style={styles.item}>
+              <Text>{rowData}</Text>
+          </View>);
     }
 
     render(){
 
 
+
+
         return (
-            <View style={{flex:1}}>
+            <View style={{flex:1,backgroundColor:'#f0f0f0'}}>
                 <View style={[{backgroundColor:'#444',padding: 10,justifyContent: 'center',alignItems: 'center',flexDirection:'row'},styles.card]}>
                     <View style={{flex:1}}>
                         <TouchableOpacity onPress={()=>{
@@ -64,8 +77,11 @@ class AppendCarNumPrefixModal extends Component{
                     </View>
                 </View>
 
-                <View style={styles.body}>
-
+                <View style={[styles.body]}>
+                    <ListView contentContainerStyle={styles.list}
+                              dataSource={this.state.dataSource}
+                              renderRow={this.renderRow}
+                    />
                 </View>
 
 
@@ -104,6 +120,20 @@ var styles = StyleSheet.create({
         paddingBottom:16,
         borderBottomWidth:1,
         borderBottomColor:'#222'
+    },
+    list:{
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+    },
+    item: {
+        backgroundColor: '#fff',
+        borderRadius:4,
+        margin: 3,
+        width: 100,
+        height:40,
+        flexDirection:'row',
+        alignItems:'center',
+        justifyContent:'center'
     }
 });
 
