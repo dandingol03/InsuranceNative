@@ -84,7 +84,7 @@ class AppendCarNumPrefixModal extends Component{
                     <View style={{flex:1,marginRight:10,flexDirection:'row',justifyContent:'center'}}>
                     </View>
                 </View>
-                <View style={{backgroundColor:'#fff',flexDirection:'row',padding:12}}>
+                <View style={{backgroundColor:'#fff',flexDirection:'row',padding:8}}>
                     <View style={{flex:2,padding:10}}>
                         <Text>当前选择城市</Text>
                     </View>
