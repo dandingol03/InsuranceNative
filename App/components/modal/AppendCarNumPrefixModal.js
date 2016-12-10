@@ -16,6 +16,7 @@ import  {
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
+import GridView from 'react-native-grid-view'
 import { connect } from 'react-redux';
 var {height, width} = Dimensions.get('window');
 
@@ -29,13 +30,18 @@ class AppendCarNumPrefixModal extends Component{
         }
     }
 
+    confirm(){
+
+    }
+
     constructor(props)
     {
         super(props);
         var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         this.state={
             city:null,
-            dataSource:ds.cloneWithRows(['济南','青岛','淄博','枣庄','东营','烟台','潍坊','济宁','泰安','威海','日照','滨州','德州','聊城','临沂','菏泽','莱芜'])
+            dataSource:ds.cloneWithRows(['济南','青岛','淄博','枣庄','东营','烟台','潍坊','滨州','德州','济宁','泰安',
+                '威海','日照','聊城','临沂','菏泽','莱芜'])
         }
     }
 
@@ -43,9 +49,16 @@ class AppendCarNumPrefixModal extends Component{
     renderRow(rowData)
     {
       return  (
-          <View style={styles.item}>
-              <Text>{rowData}</Text>
-          </View>);
+              <TouchableOpacity onPress={
+                    ()=>{
+                        this.setState({city:rowData});
+                    }
+                       }>
+                  <View style={styles.item} key={rowData}>
+                      <Text>{rowData}</Text>
+                  </View>
+              </TouchableOpacity>
+          );
     }
 
     render(){
@@ -55,18 +68,8 @@ class AppendCarNumPrefixModal extends Component{
 
         return (
             <View style={{flex:1,backgroundColor:'#f0f0f0'}}>
-                <View style={[{backgroundColor:'#444',padding: 10,justifyContent: 'center',alignItems: 'center',flexDirection:'row'},styles.card]}>
+                <View style={[{backgroundColor:'#11c1f3',padding:4,justifyContent: 'center',alignItems: 'center',flexDirection:'row'},styles.card]}>
                     <View style={{flex:1}}>
-                        <TouchableOpacity onPress={()=>{
-                        this.close();
-                            }}>
-                            <Icon name='chevron-left' size={30} color="#fff"/>
-                        </TouchableOpacity>
-                    </View>
-                    <Text style={{fontSize:17,flex:3,textAlign:'center',color:'#fff'}}>
-                        绑定新车
-                    </Text>
-                    <View style={{flex:1,marginRight:10,flexDirection:'row',justifyContent:'center'}}>
                         <TouchableOpacity onPress={
                             ()=>{
                                 this.close();
@@ -75,14 +78,41 @@ class AppendCarNumPrefixModal extends Component{
                             <Icon name="times-circle" size={30} color="#fff" />
                         </TouchableOpacity>
                     </View>
+                    <Text style={{fontSize:17,flex:3,textAlign:'center',color:'#fff'}}>
+                        选择城市
+                    </Text>
+                    <View style={{flex:1,marginRight:10,flexDirection:'row',justifyContent:'center'}}>
+                    </View>
+                </View>
+                <View style={{backgroundColor:'#fff',flexDirection:'row',padding:12}}>
+                    <View style={{flex:2,padding:10}}>
+                        <Text>当前选择城市</Text>
+                    </View>
+                    <View style={{flex:2,justifyContent:'center',backgroundColor:'#f0f0f0',padding:5}}>
+                        <Text style={{color:'#222'}}>{this.state.city}</Text>
+                    </View>
+                    <View style={{flex:1}}>
+
+                    </View>
+
                 </View>
 
                 <View style={[styles.body]}>
-                    <ListView contentContainerStyle={styles.list}
-                              dataSource={this.state.dataSource}
-                              renderRow={this.renderRow}
+                    <GridView
+                        items={this.state.dataSource}
+                        itemsPerRow={3}
+                        renderItem={this.renderRow.bind(this)}
+                        style={styles.listView}
                     />
+                </View
+                >
+                <View style={{padding:8,width:width*0.6,marginLeft:width*0.2,backgroundColor:'#ff591a',
+                            flexDirection:'row',justifyContent:'center',borderRadius:8}}>
+                    <TouchableOpacity onPress={this.confirm}>
+                        <Text style={{color:'#fff'}}>确认</Text>
+                    </TouchableOpacity>
                 </View>
+
 
 
             </View>
@@ -124,6 +154,7 @@ var styles = StyleSheet.create({
     list:{
         flexDirection: 'row',
         flexWrap: 'wrap',
+        alignItems:'flex-start'
     },
     item: {
         backgroundColor: '#fff',
@@ -133,7 +164,13 @@ var styles = StyleSheet.create({
         height:40,
         flexDirection:'row',
         alignItems:'center',
-        justifyContent:'center'
+        justifyContent:'center',
+        marginBottom:10,
+        marginRight:10
+    },
+    listView: {
+        paddingTop: 20,
+        backgroundColor: 'transparent',
     }
 });
 
