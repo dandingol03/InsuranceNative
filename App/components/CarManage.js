@@ -25,7 +25,6 @@ import NewCarBind from './modal/NewCarBind';
 import Config from '../../config';
 var {height, width} = Dimensions.get('window');
 
-
 class CarManage extends Component{
 
     goBack(){
@@ -35,9 +34,6 @@ class CarManage extends Component{
         }
     }
 
-    createNewCar(){
-        
-    }
 
     setModalVisible(visible) {
         this.setState({modalVisible: visible});
@@ -92,7 +88,6 @@ class CarManage extends Component{
             </View>;
 
 
-
         return row;
     }
 
@@ -144,9 +139,12 @@ class CarManage extends Component{
                     onRequestClose={() => {alert("Modal has been closed.")}}
                 >
 
-                    <NewCarBind onClose={()=>{
-                        this.setModalVisible(!this.state.modalVisible)
-                    }}/>
+                    <NewCarBind
+                        onClose={()=>{
+                            this.setModalVisible(!this.state.modalVisible)
+                    }}
+                        navigator={this.props.navigator}
+                        />
 
                 </Modal>
                 <View style={{flex:4,padding:15}}>

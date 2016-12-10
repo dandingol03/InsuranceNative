@@ -6,6 +6,7 @@ import React,{Component} from 'react';
 
 import  {
     StyleSheet,
+    ScrollView,
     Image,
     Text,
     View,
@@ -13,57 +14,31 @@ import  {
     Alert,
     TouchableOpacity,
     Dimensions,
-    Modal
+    Modal,
+    TouchableHighlight
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
-import UpdateCarInfo from '../UpdateCarInfo';
-
-
-
+var Proxy = require('../proxy/Proxy');
+import { connect } from 'react-redux';
+import Config from '../../config';
 var {height, width} = Dimensions.get('window');
+import { AppRegistry, TextInput } from 'react-native';
 
 
-import AppendCarNumPrefixModal from './AppendCarNumPrefixModal';
+class UpdateCarInfo extends Component{
 
-
-class NewCarBind extends Component{
-
-    close(){
-
-        if(this.props.onClose!==undefined&&this.props.onClose!==null)
-        {
-            this.props.onClose();
-        }
-
-    }
-
-    appendCarNumPrefixByCity(val){
-        this.setState({carNumPrefixModal: val});
-    }
-
-    createNewCar(){
-
-        if(this.props.onClose!==undefined&&this.props.onClose!==null)
-        {
-            this.props.onClose();
-        }
-
-        const {navigator} =this.props;
+    goBack(){
+        const { navigator } = this.props;
         if(navigator) {
-            navigator.push({
-                name: 'updateCarInfo',
-                component: UpdateCarInfo,
-                params: {
-                    title: 'updateCarInfo'
-                }
-            })
+            navigator.pop();
         }
     }
+
 
     fetchData(){
         Proxy.post({
-            url:'/svr/request',
+            url:Config.server+'/svr/request',
             headers: {
                 'Authorization': "Bearer " + this.state.accessToken,
                 'Content-Type': 'application/json'
@@ -88,60 +63,34 @@ class NewCarBind extends Component{
     }
 
 
-
     constructor(props)
     {
         super(props);
-        this.state={
-            city:null,
-            carNum:null,
-            carNumPrefixModal:false
-        }
+        const { accessToken } = this.props;
+        this.state = {accessToken: accessToken,
+                        city:null,
+                        carNum:null,
+                        carNumPrefixModal:false};
     }
 
+
     render(){
-
-        var temp=<View style={styles.row}>
-            <View style={{marginRight:20}}>
-                <Icon name="address-card-o" size={24}/>
-            </View>
-            <View style={{flex:2,flexDirection:'row',alignItems:'flex-end'}}>
-                <Text style={{'fontSize':16}}> 车牌:</Text>
-            </View>
-            <View style={{flex:2}}>
-                <Text>{this.state.carNum}</Text>
-            </View>
-            <View style={{flex:1}}>
-            </View>
-        </View>;
-
 
         return (
             <View style={{flex:1}}>
 
                 <View style={[{backgroundColor:'#444',padding: 10,justifyContent: 'center',alignItems: 'center',flexDirection:'row'},styles.card]}>
                     <View style={{flex:1}}>
-                       <TouchableOpacity onPress={()=>{
-                        this.close();
+                        <TouchableOpacity onPress={()=>{
+                        this.goBack();
                             }}>
-                           <Icon name='chevron-left' size={30} color="#fff"/>
-                       </TouchableOpacity>
-                    </View>
-                    <Text style={{fontSize:17,flex:3,textAlign:'center',color:'#fff'}}>
-                        绑定新车
-                    </Text>
-                    <View style={{flex:1,marginRight:10,flexDirection:'row',justifyContent:'center'}}>
-                        <TouchableOpacity onPress={
-                            ()=>{
-                                this.close();
-                            }
-                        }>
-                            <Icon name="times-circle" size={30} color="#fff" />
+                            <Icon name='chevron-left' size={30} color="#fff"/>
                         </TouchableOpacity>
                     </View>
+                    <Text style={{fontSize:17,flex:3,textAlign:'center',color:'#fff'}}>
+                        创建新车
+                    </Text>
                 </View>
-
-
 
                 <View style={{flex:2,padding:10}}>
                     <View style={styles.row}>
@@ -176,40 +125,53 @@ class NewCarBind extends Component{
                         </View>
                     </View>
 
-                    <View style={{flex:1,padding:16,height:60,flexDirection:'row',justifyContent:'center'}}>
-                        <View style={{width:width/3}}>
-                            <Icon.Button name="hand-o-up" backgroundColor="#3b5998" onPress={
-                                    ()=>{
-                                        this.createNewCar();
-                                    }
-                                }>
-                                <Text style={{fontFamily: 'Arial', fontSize: 15,textAlign:'center'}}>
-                                    绑定新车
-                                </Text>
-                            </Icon.Button>
-
-
+                    <View style={styles.row}>
+                        <View style={{marginRight:20}}>
+                            <Icon name="address-card-o" size={24}/>
+                        </View>
+                        <View style={{flex:1}}>
+                            <Text style={{'fontSize':16}}>姓名:</Text>
+                        </View>
+                        <View style={{flex:3}}>
+                            <TextInput
+                                style={{height: 24}}
+                                onChangeText={(ownerName) => this.setState({ownerName})}
+                                value={this.state.ownerName}
+                            />
                         </View>
                     </View>
 
+                    <View style={styles.row}>
+                        <View style={{marginRight:20}}>
+                            <Icon name="address-card-o" size={24}/>
+                        </View>
+                        <View style={{flex:2}}>
+                            <Text style={{'fontSize':16}}>发证日期:</Text>
+                        </View>
+                        <View style={{flex:2}}>
+                            <Text>{this.state.carNum}</Text>
+                        </View>
+                    </View>
+
+                    <View style={styles.row}>
+                        <View style={{marginRight:20}}>
+                            <Icon name="address-card-o" size={24}/>
+                        </View>
+                        <View style={{flex:2}}>
+                            <Text style={{'fontSize':16}}>是一年内过户的二手车吗:</Text>
+                        </View>
+                        <View style={{flex:2}}>
+                            <Text>{this.state.carNum}</Text>
+                        </View>
+                    </View>
+
+
+
+
+
                 </View>
 
-                <Modal
-                    animationType={"slide"}
-                    transparent={false}
-                    visible={this.state.carNumPrefixModal}
-                    onRequestClose={() => {alert("Modal has been closed.")}}
-                >
-
-                    <AppendCarNumPrefixModal onClose={()=>{
-                        this.appendCarNumPrefixByCity(!this.state.carNumPrefixModal)
-                    }}/>
-
-                </Modal>
-
-
-            </View>
-        );
+            </View>);
     }
 }
 
@@ -223,12 +185,12 @@ var styles = StyleSheet.create({
     card: {
         borderTopWidth:0,
         borderBottomWidth: 1,
+        backgroundColor: '#fff',
         borderBottomColor: 'rgba(0,0,0,0.1)',
         shadowColor: '#ccc',
         shadowOffset: { width: 2, height: 2, },
         shadowOpacity: 0.5,
         shadowRadius: 3,
-        borderTopColor:'#fff',
     },
     separator: {
         height: 1,
@@ -239,12 +201,20 @@ var styles = StyleSheet.create({
     },
     row:{
         flexDirection:'row',
-        paddingTop:16,
-        paddingBottom:16,
+        paddingTop:8,
+        paddingBottom:8,
         borderBottomWidth:1,
         borderBottomColor:'#222'
     }
+
+
+
 });
 
 
-module.exports = NewCarBind;
+
+module.exports = connect(state=>({
+        accessToken:state.user.accessToken
+    })
+)(UpdateCarInfo);
+
