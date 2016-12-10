@@ -16,10 +16,12 @@ import  {
 } from 'react-native';
 
 import { connect } from 'react-redux';
+
 import Icon from 'react-native-vector-icons/FontAwesome';
 import FacebookTabBar from '../components/FacebookTabBar';
 import ScrollableTabView,{DefaultTabBar} from 'react-native-scrollable-tab-view';
 import CarManage from '../components/CarManage';
+
 var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
 
@@ -47,7 +49,6 @@ class dym extends Component{
 
     render() {
 
-
         var scrollTab=
             <ScrollableTabView
                 style={{marginTop: 20, }}
@@ -58,6 +59,7 @@ class dym extends Component{
                 <View style={styles.title}>
                     <Text style={{'fontWeight':'bold',color:'#222'}}>选择车辆</Text>
                 </View>
+
                 <View style={{flex:2,padding:10,justifyContent:'center'}}>
                     <View style={{borderBottomWidth:1,borderBottomColor:'#222',flexDirection:'row'}}>
                         <View style={{flex:3,paddingTop:8,justifyContent:'center',
@@ -100,9 +102,7 @@ class dym extends Component{
 
         return (
             <View style={styles.container}>
-
                     <Image style={styles.thumb} source={ require('../images/banner.png')}/>
-
                 {scrollTab}
             </View>
         )
@@ -150,6 +150,11 @@ var styles = StyleSheet.create({
         shadowOpacity: 0.5,
         shadowRadius: 3,
     }
+
+
+
+
+
 });
 
 

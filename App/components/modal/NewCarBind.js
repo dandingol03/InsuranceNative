@@ -18,6 +18,7 @@ import  {
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
+import UpdateCarInfo from '../UpdateCarInfo';
 
 
 
@@ -26,13 +27,16 @@ var {height, width} = Dimensions.get('window');
 
 import AppendCarNumPrefixModal from './AppendCarNumPrefixModal';
 
+
 class NewCarBind extends Component{
 
     close(){
+
         if(this.props.onClose!==undefined&&this.props.onClose!==null)
         {
             this.props.onClose();
         }
+
     }
 
     appendCarNumPrefixByCity(val){
@@ -114,6 +118,23 @@ class NewCarBind extends Component{
             'info',
             'bind a new car'
         );
+
+        if(this.props.onClose!==undefined&&this.props.onClose!==null)
+        {
+            this.props.onClose();
+        }
+
+        const {navigator} =this.props;
+        if(navigator) {
+            navigator.push({
+                name: 'updateCarInfo',
+                component: UpdateCarInfo,
+                params: {
+                    title: 'updateCarInfo'
+                }
+            })
+        }
+
     }
 
     fetchData(){

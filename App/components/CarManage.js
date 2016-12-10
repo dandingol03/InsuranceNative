@@ -25,7 +25,6 @@ import NewCarBind from './modal/NewCarBind';
 import Config from '../../config';
 var {height, width} = Dimensions.get('window');
 
-
 class CarManage extends Component{
 
     goBack(){
@@ -35,9 +34,6 @@ class CarManage extends Component{
         }
     }
 
-    createNewCar(){
-        
-    }
 
     setModalVisible(visible) {
         this.setState({modalVisible: visible});
@@ -90,7 +86,6 @@ class CarManage extends Component{
                     </View>
                 </View>
             </View>;
-
 
 
         return row;

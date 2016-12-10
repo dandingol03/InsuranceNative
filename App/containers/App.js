@@ -58,7 +58,6 @@ class App extends React.Component {
             case 'gaOrder':
                 component=GaOrder;
                 break;
-
             case 'dym':
                 component=dym;
                 break;
@@ -114,7 +113,6 @@ class App extends React.Component {
 
 
         return (
-
             <FontAwesome.TabBarItem
                 title=""
                 iconName={icon}
