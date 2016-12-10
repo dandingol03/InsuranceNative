@@ -144,9 +144,12 @@ class CarManage extends Component{
                     onRequestClose={() => {alert("Modal has been closed.")}}
                 >
 
-                    <NewCarBind onClose={()=>{
-                        this.setModalVisible(!this.state.modalVisible)
-                    }}/>
+                    <NewCarBind
+                        onClose={()=>{
+                            this.setModalVisible(!this.state.modalVisible)
+                        }}
+                        navigator={this.props.navigator}
+                    />
 
                 </Modal>
                 <View style={{flex:4,padding:15}}>
