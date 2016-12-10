@@ -48,6 +48,8 @@ class AppendCarNumPrefixModal extends Component{
 
     renderRow(rowData)
     {
+        //TODO:judge selectedStyle and unSelectedStyle
+
       return  (
               <TouchableOpacity onPress={
                     ()=>{
