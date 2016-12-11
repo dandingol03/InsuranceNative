@@ -35,6 +35,15 @@ class UpdateCarInfo extends Component{
         }
     }
 
+    close(){
+
+        if(this.props.onClose!==undefined&&this.props.onClose!==null)
+        {
+            this.props.onClose();
+        }
+
+    }
+
 
     fetchData(){
         Proxy.post({
@@ -67,11 +76,11 @@ class UpdateCarInfo extends Component{
     {
         super(props);
         const { accessToken } = this.props;
-        this.state = {accessToken: accessToken,
-                        city:null,
-                        carNum:null,
-                        carNumPrefixModal:false,
-                        carTransferred:false};
+        this.state = {
+            accessToken: accessToken,
+            city:null,
+            carNum:null
+        };
     }
 
 
@@ -80,26 +89,30 @@ class UpdateCarInfo extends Component{
         return (
             <View style={{flex:1}}>
 
-                <View style={[{backgroundColor:'#444',padding: 10,justifyContent: 'center',alignItems: 'center',flexDirection:'row'},styles.card]}>
+                <View style={[{backgroundColor:'#444',padding: 4,justifyContent: 'center',alignItems: 'center',flexDirection:'row'},styles.card]}>
                     <View style={{flex:1}}>
-                        <TouchableOpacity>
-                            <Icon name='chevron-left' size={30} color="#fff"/>
+                        <TouchableOpacity onPress={()=>{
+                        this.goBack();
+                            }}>
+                            <Icon name='chevron-left' size={30} color="#444"/>
                         </TouchableOpacity>
                     </View>
-                    <Text style={{fontSize:17,flex:3,textAlign:'center',color:'#fff'}}>
+                    <Text style={{fontSize:17,flex:3,textAlign:'center',color:'#444'}}>
                         创建新车
                     </Text>
+                    <View style={{flex:1,marginRight:10,flexDirection:'row',justifyContent:'center'}}>
+                    </View>
                 </View>
 
                 <View style={{padding:10}}>
-                    <View style={styles.row}>
+                    <View style={[styles.row,{alignItems:'center'}]}>
                         <View style={{flex:1,marginRight:20}}>
                             <Icon name="map-marker" size={20}/>
                         </View>
                         <View style={{flex:4}}>
                             <Text style={{'fontSize':13}}>用车城市:</Text>
                         </View>
-                        <View style={{flex:3}}>
+                        <View style={{flex:3,flexDirection:'row',alignItems:'center'}}>
                             <Text>{this.state.city}</Text>
                         </View>
                         <View style={{flex:1}}>
@@ -116,12 +129,12 @@ class UpdateCarInfo extends Component{
                         <View style={{flex:1,marginRight:20,justifyContent:'center'}}>
                             <Icon name="car" size={18}/>
                         </View>
-                        <View style={{flex:2}}>
+                        <View style={{flex:2,flexDirection:'row',alignItems:'center'}}>
                             <Text style={{'fontSize':13}}>车牌:</Text>
                         </View>
                         <View style={{flex:6}}>
                             <TextInput
-                                style={{height: 24}}
+                                style={{height: 40}}
                                 onChangeText={(carNum) => this.setState({carNum})}
                                 value={this.state.carNum}
                             />
@@ -212,8 +225,6 @@ var styles = StyleSheet.create({
     },
     row:{
         flexDirection:'row',
-        paddingTop:8,
-        paddingBottom:8,
         borderBottomWidth:1,
         borderBottomColor:'#222'
     }
