@@ -13,7 +13,8 @@ import  {
     Alert,
     TouchableOpacity,
     Dimensions,
-    Modal
+    Modal,
+    TextInput
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -42,7 +43,81 @@ class NewCarBind extends Component{
         this.setState({carNumPrefixModal: val});
     }
 
-    createNewCar(){
+
+    getCarNumPrefixByCity(city)
+    {
+        var carNum=null;
+        switch (city) {
+            case '济南':
+                carNum='鲁A';
+                break;
+            case '青岛':
+                carNum='鲁B';
+                break;
+            case '淄博':
+                carNum='鲁C';
+                break;
+            case '枣庄':
+                carNum='鲁D';
+                break;
+            case '东营':
+                carNum='鲁E';
+                break;
+            case '烟台':
+                carNum='鲁F';
+                break;
+            case '潍坊':
+                carNum='鲁G';
+                break;
+            case '济宁':
+                carNum='鲁H';
+                break;
+            case '泰安':
+                carNum='鲁J';
+                break;
+            case '威海':
+                carNum='鲁K';
+                break;
+            case '日照':
+                carNum='鲁L';
+                break;
+            case '滨州':
+                carNum='鲁M';
+                break;
+            case '德州':
+                carNum='鲁N';
+                break;
+            case '聊城':
+                carNum='鲁P';
+                break;
+            case '临沂':
+                carNum='鲁Q';
+                break;
+            case '菏泽':
+                carNum='鲁R';
+                break;
+            case '莱芜':
+                carNum='鲁S';
+                break;
+            default:
+                break;
+        }
+        return carNum;
+    }
+
+
+    cityConfirm(city){
+        //TODO:filter the city prefix
+        var prefix=this.getCarNumPrefixByCity(city);
+        this.setState({carNumPrefixModal: false,city:city,carNum:prefix});
+    }
+
+    bindCar()
+    {
+        Alert.alert(
+            'info',
+            'bind a new car'
+        );
 
         if(this.props.onClose!==undefined&&this.props.onClose!==null)
         {
@@ -59,6 +134,7 @@ class NewCarBind extends Component{
                 }
             })
         }
+
     }
 
     fetchData(){
@@ -145,7 +221,7 @@ class NewCarBind extends Component{
 
                 <View style={{flex:2,padding:10}}>
                     <View style={styles.row}>
-                        <View style={{marginRight:20}}>
+                        <View style={{marginRight:20,width:30}}>
                             <Icon name="map-marker" size={24}/>
                         </View>
                         <View style={{flex:2}}>
@@ -164,31 +240,39 @@ class NewCarBind extends Component{
                         </View>
                     </View>
 
-                    <View style={styles.row}>
-                        <View style={{marginRight:20}}>
+                    <View style={[styles.row,{alignItems:'center'}]}>
+                        <View style={{marginRight:20,width:30}}>
                             <Icon name="address-card-o" size={24}/>
                         </View>
                         <View style={{flex:2}}>
                             <Text style={{'fontSize':16}}>车牌:</Text>
                         </View>
                         <View style={{flex:2}}>
-                            <Text>{this.state.carNum}</Text>
+                            <TextInput
+                                style={{borderBottomWidth:0}}
+                                editable = {true}
+                                height={40}
+                                onChangeText={
+                                    (carNum)=>this.setState({carNum:carNum})
+                                }
+                                value={this.state.carNum}
+                                maxLength = {40}
+                            />
                         </View>
+                        <View style={{flex:1}}></View>
                     </View>
 
-                    <View style={{flex:1,padding:16,height:60,flexDirection:'row',justifyContent:'center'}}>
+                    <View style={[styles.row,{borderBottomWidth:0,justifyContent:'center'}]}>
                         <View style={{width:width/3}}>
                             <Icon.Button name="hand-o-up" backgroundColor="#3b5998" onPress={
-                                    ()=>{
-                                        this.createNewCar();
-                                    }
-                                }>
-                                <Text style={{fontFamily: 'Arial', fontSize: 15,textAlign:'center'}}>
-                                    绑定新车
-                                </Text>
+                            ()=>{
+                                this.bindCar();
+                            }
+                        }>
+                            <Text style={{fontFamily: 'Arial', fontSize: 15,textAlign:'center',color:'#fff'}}>
+                                绑定新车
+                            </Text>
                             </Icon.Button>
-
-
                         </View>
                     </View>
 
@@ -201,9 +285,14 @@ class NewCarBind extends Component{
                     onRequestClose={() => {alert("Modal has been closed.")}}
                 >
 
-                    <AppendCarNumPrefixModal onClose={()=>{
-                        this.appendCarNumPrefixByCity(!this.state.carNumPrefixModal)
-                    }}/>
+                    <AppendCarNumPrefixModal
+                        onClose={()=>{
+                            this.appendCarNumPrefixByCity(!this.state.carNumPrefixModal)
+                        }}
+                        onConfirm={(city)=>{
+                            this.cityConfirm(city);
+                        }}
+                    />
 
                 </Modal>
 
@@ -239,8 +328,8 @@ var styles = StyleSheet.create({
     },
     row:{
         flexDirection:'row',
-        paddingTop:16,
-        paddingBottom:16,
+        paddingTop:8,
+        paddingBottom:8,
         borderBottomWidth:1,
         borderBottomColor:'#222'
     }

@@ -31,7 +31,17 @@ class AppendCarNumPrefixModal extends Component{
     }
 
     confirm(){
-
+        if(this.props.onConfirm!==undefined&&this.props.onConfirm!==null)
+        {
+            if(this.state.city!=null)
+                this.props.onConfirm(this.state.city);
+            else{
+                Alert.alert(
+                    'error',
+                    'u should select a city first'
+                );
+            }
+        }
     }
 
     constructor(props)
@@ -50,17 +60,32 @@ class AppendCarNumPrefixModal extends Component{
     {
         //TODO:judge selectedStyle and unSelectedStyle
 
-      return  (
-              <TouchableOpacity onPress={
+        if(this.state.city==rowData)
+        {
+            return  (
+                <TouchableOpacity onPress={
                     ()=>{
                         this.setState({city:rowData});
                     }
                        }>
-                  <View style={styles.item} key={rowData}>
-                      <Text>{rowData}</Text>
-                  </View>
-              </TouchableOpacity>
-          );
+                    <View style={styles.selectedItem} key={rowData}>
+                        <Text style={{color:'#fff'}}>{rowData}</Text>
+                    </View>
+                </TouchableOpacity>
+            );
+        }else{
+            return  (
+                <TouchableOpacity onPress={
+                    ()=>{
+                        this.setState({city:rowData});
+                    }
+                       }>
+                    <View style={styles.item} key={rowData}>
+                        <Text>{rowData}</Text>
+                    </View>
+                </TouchableOpacity>
+            );
+        }
     }
 
     render(){
@@ -108,12 +133,12 @@ class AppendCarNumPrefixModal extends Component{
                     />
                 </View
                 >
-                <View style={{padding:8,width:width*0.6,marginLeft:width*0.2,backgroundColor:'#ff591a',
-                            flexDirection:'row',justifyContent:'center',borderRadius:8}}>
-                    <TouchableOpacity onPress={this.confirm}>
-                        <Text style={{color:'#fff'}}>确认</Text>
-                    </TouchableOpacity>
-                </View>
+                <TouchableOpacity onPress={this.confirm.bind(this)}>
+                    <View style={{padding:8,width:width*0.6,marginLeft:width*0.2,backgroundColor:'#ff591a',
+                                flexDirection:'row',justifyContent:'center',borderRadius:8}}>
+                            <Text style={{color:'#fff'}}>确认</Text>
+                    </View>
+                </TouchableOpacity>
 
 
 
@@ -160,6 +185,18 @@ var styles = StyleSheet.create({
     },
     item: {
         backgroundColor: '#fff',
+        borderRadius:4,
+        margin: 3,
+        width: 100,
+        height:40,
+        flexDirection:'row',
+        alignItems:'center',
+        justifyContent:'center',
+        marginBottom:10,
+        marginRight:10
+    },
+    selectedItem:{
+        backgroundColor: '#63c2e3',
         borderRadius:4,
         margin: 3,
         width: 100,

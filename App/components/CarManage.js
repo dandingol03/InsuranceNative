@@ -142,9 +142,9 @@ class CarManage extends Component{
                     <NewCarBind
                         onClose={()=>{
                             this.setModalVisible(!this.state.modalVisible)
-                    }}
+                        }}
                         navigator={this.props.navigator}
-                        />
+                    />
 
                 </Modal>
                 <View style={{flex:4,padding:15}}>
