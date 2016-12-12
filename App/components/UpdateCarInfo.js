@@ -105,17 +105,20 @@ class UpdateCarInfo extends Component{
                 </View>
 
                 <View style={{padding:10}}>
-                    <View style={[styles.row,{alignItems:'center'}]}>
+
+
+
+                    <View style={[styles.row,{alignItems:'center',padding:10,paddingLeft:0,paddingRight:0}]}>
                         <View style={{flex:1,marginRight:20}}>
                             <Icon name="map-marker" size={20}/>
                         </View>
-                        <View style={{flex:4}}>
+                        <View style={{flex:4,flexDirection:'row',alignItems:'center'}}>
                             <Text style={{'fontSize':13}}>用车城市:</Text>
                         </View>
                         <View style={{flex:3,flexDirection:'row',alignItems:'center'}}>
                             <Text>{this.state.city}</Text>
                         </View>
-                        <View style={{flex:1}}>
+                        <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
                             <TouchableOpacity onPress={
                                     ()=>{
                                         this.appendCarNumPrefixByCity(true);
@@ -125,7 +128,7 @@ class UpdateCarInfo extends Component{
                         </View>
                     </View>
 
-                    <View style={styles.row}>
+                    <View style={[styles.row]}>
                         <View style={{flex:1,marginRight:20,justifyContent:'center'}}>
                             <Icon name="car" size={18}/>
                         </View>
@@ -145,45 +148,45 @@ class UpdateCarInfo extends Component{
                         <View style={{flex:1,marginRight:20,justifyContent:'center'}}>
                             <Icon name="id-card" size={20}/>
                         </View>
-                        <View style={{flex:2}}>
+                        <View style={{flex:2,flexDirection:'row',alignItems:'center'}}>
                             <Text style={{'fontSize':13}}>姓名:</Text>
                         </View>
                         <View style={{flex:6}}>
                             <TextInput
-                                style={{height: 24}}
+                                style={{height: 40}}
                                 onChangeText={(ownerName) => this.setState({ownerName})}
                                 value={this.state.ownerName}
                             />
                         </View>
                     </View>
 
-                    <View style={styles.row}>
+                    <View style={[styles.row,{alignItems:'center',padding:10,paddingLeft:0,paddingRight:0}]}>
                         <View style={{flex:1,marginRight:20,justifyContent:'center'}}>
                             <Icon name="calendar" size={20}/>
                         </View>
-                        <View style={{flex:2}}>
+                        <View style={{flex:2,flexDirection:'row',alignItems:'center'}}>
                             <Text style={{'fontSize':13}}>发证日期:</Text>
                         </View>
-                        <View style={{flex:6}}>
+                        <View style={{flex:6,flexDirection:'row',alignItems:'center'}}>
                             <Text>{this.state.carNum}</Text>
                         </View>
                     </View>
 
-                    <View style={styles.row}>
+                    <View style={[styles.row,{alignItems:'center',padding:4,paddingLeft:0,paddingRight:0}]}>
                         <View style={{flex:1,marginRight:20,justifyContent:'center'}}>
                             <Icon name="info" size={20}/>
                         </View>
                         <View style={{flex:8}}>
                             <Text style={{'fontSize':13}}>是一年内过户的二手车吗:</Text>
                         </View>
-                        <View style={{flex:1}}>
+                        <View style={{flex:1,marginRight:20}}>
                             <TouchableOpacity onPress={
                                     ()=>{
                                         this.setState({carTransferred:!this.state.carTransferred});
                                     }}>
                                 {
                                     this.state.carTransferred==true?
-                                        <Icon name="check-circle" size={20}/>:<Icon name="circle-o" size={20}/>
+                                        <Icon name="check-circle" size={30}/>:<Icon name="circle-o" size={30}/>
                                 }
                             </TouchableOpacity>
                         </View>
