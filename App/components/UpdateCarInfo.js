@@ -175,12 +175,8 @@ class UpdateCarInfo extends Component{
                             </TouchableOpacity>
                         </View>
                     </View>
-
-
-
-
-
                 </View>
+
 
             </View>);
     }
