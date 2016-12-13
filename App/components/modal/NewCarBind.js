@@ -114,15 +114,13 @@ class NewCarBind extends Component{
 
     bindCar()
     {
-        Alert.alert(
-            'info',
-            'bind a new car'
-        );
 
         if(this.props.onClose!==undefined&&this.props.onClose!==null)
         {
             this.props.onClose();
         }
+
+        //TODO:validate carNum
 
         const {navigator} =this.props;
         if(navigator) {
