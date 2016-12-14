@@ -25,6 +25,7 @@ import Config from '../../config';
 var {height, width} = Dimensions.get('window');
 import { AppRegistry, TextInput } from 'react-native';
 import AppendCarNumPrefixModal from './modal/AppendCarNumPrefixModal';
+import UploadLicenseCardModal from './modal/UploadLicenseCardModal';
 import DatePicker from 'react-native-datepicker';
 import ScrollableTabView, {DefaultTabBar, ScrollableTabBar} from 'react-native-scrollable-tab-view';
 
@@ -48,16 +49,14 @@ class UpdateCarInfo extends Component{
 
     }
 
-    uploadLicenseCard(){
-        Alert.alert(
-            'info',
-            '上传行驶证'
-        );
+    uploadLicenseCard(val){
+        this.setState({uploadModalVisible:val})
     }
 
     appendCarNumPrefixByCity(val){
         this.setState({modalVisible:val})
     }
+
 
     getCarNumPrefixByCity(city)
     {
@@ -167,7 +166,8 @@ class UpdateCarInfo extends Component{
             issueDate:null,
             factoryNum:null,
             engineNum:null,
-            frameNum:null
+            frameNum:null,
+            uploadModalVisible:false
         };
     }
 
@@ -193,9 +193,6 @@ class UpdateCarInfo extends Component{
                 </View>
 
                 <View style={{padding:10}}>
-
-
-
                     <View style={[styles.row,{alignItems:'center',padding:10,paddingLeft:0,paddingRight:0}]}>
                         <View style={{flex:1,marginRight:20}}>
                             <Icon name="map-marker" size={20}/>
@@ -299,6 +296,7 @@ class UpdateCarInfo extends Component{
                             </TouchableOpacity>
                         </View>
                     </View>
+
                     <View style={{flex:1}}>
                         <ScrollableTabView
                             style={{marginTop: 20,minHeight:200 }}
@@ -306,8 +304,6 @@ class UpdateCarInfo extends Component{
                             renderTabBar={() => <ScrollableTabBar />}
                         >
                             <View tabLabel='填写信息'>
-
-
 
                                 <View style={[styles.row]}>
                                     <View style={{flex:2,flexDirection:'row',alignItems:'center'}}>
@@ -364,7 +360,7 @@ class UpdateCarInfo extends Component{
                                 <View style={{padding:10,width:width/2,marginLeft:width/4,flexDirection:'row',justifyContent:'center'}}>
                                     <Icon.Button name="hand-o-up" backgroundColor="#3b5998" onPress={
                                             ()=>{
-                                               this.uploadLicenseCard();
+                                               this.uploadLicenseCard(!this.state.uploadModalVisible);
                                             }
                                         }>
                                         <Text style={{fontFamily: 'Arial', fontSize: 15,textAlign:'center',color:'#fff'}}>
@@ -392,7 +388,24 @@ class UpdateCarInfo extends Component{
                         }}
                         />
                     </Modal>
+
+                    <Modal
+                        animationType={"slide"}
+                        transparent={false}
+                        visible={this.state.uploadModalVisible}
+                        onRequestClose={() => {alert("Modal has been closed.")}}
+                    >
+
+                        <UploadLicenseCardModal
+                            onClose={()=>{
+                            this.uploadLicenseCard(!this.state.uploadModalVisible)
+                        }}
+
+                        />
+                    </Modal>
+
                 </View>
+
 
             </View>);
     }

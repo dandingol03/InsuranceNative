@@ -9,6 +9,7 @@ import  {
     ScrollView,
     Image,
     Text,
+    TextInput,
     View,
     ListView,
     Alert,
@@ -60,9 +61,8 @@ class CarManage extends Component{
             },
             body: {
                 request:'fetchInsuranceCarInfoByCustomerId',
-                info:{
-                    carNum:''
-                }
+
+                info:{carNum:this.state.carNum}
             }
         },(res)=> {
             if(res.error)
@@ -127,7 +127,6 @@ class CarManage extends Component{
                 </View>
             </View>;
 
-
         return row;
     }
 
@@ -135,7 +134,8 @@ class CarManage extends Component{
     {
         super(props);
         const { accessToken } = this.props;
-        this.state = {accessToken: accessToken,modalVisible:false};
+        this.state = {
+            accessToken: accessToken,modalVisible:false,carNum:null};
     }
 
     render(){
@@ -196,9 +196,34 @@ class CarManage extends Component{
                     />
 
                 </Modal>
+
+                <View style={{flex:1,paddingLeft:20,paddingRight:20,paddingTop:10,paddingBottom:10}}>
+                    <View style={styles.row}>
+                        <View style={{flex:2,flexDirection:'row',alignItems:'flex-end'}}>
+                            <Text style={{'fontSize':16}}> 车牌:</Text>
+                        </View>
+                        <View style={{flex:6}}>
+                            <TextInput
+                                style={{height: 40}}
+                                onChangeText={(carNum) => this.setState({carNum})}
+                                value={this.state.carNum}
+                            />
+                        </View>
+
+                        <View style={{flex:2,marginTop:15,textAlign:'center'}}>
+                            <TouchableOpacity onPress={()=>{
+                        this.goBack();
+                            }}>
+                                <Icon name="search" size={20}/>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+
                 <View style={{flex:4,padding:15}}>
                     {listView}
                 </View>
+
                 <View style={{flex:1,padding:16,height:60,flexDirection:'row',justifyContent:'center'}}>
                     <View style={{width:width/3}}>
                         <Icon.Button name="hand-o-up" backgroundColor="#3b5998" onPress={
@@ -212,7 +237,7 @@ class CarManage extends Component{
                         </Icon.Button>
                     </View>
                 </View>
-            </View>);
+            </View>)
     }
 }
 
@@ -236,6 +261,16 @@ var styles = StyleSheet.create({
     separator: {
         height: 1,
         backgroundColor: '#E8E8E8',
+    },
+    row:{
+        flexDirection:'row',
+        paddingLeft:15,
+        paddingRight:15,
+        paddingTop:8,
+        paddingBottom:8,
+        height:50,
+        borderBottomWidth:1,
+        borderBottomColor:'#222'
     }
 });
 
