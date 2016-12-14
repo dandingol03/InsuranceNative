@@ -26,7 +26,7 @@ var {height, width} = Dimensions.get('window');
 import { AppRegistry, TextInput } from 'react-native';
 import AppendCarNumPrefixModal from './modal/AppendCarNumPrefixModal';
 import DatePicker from 'react-native-datepicker';
-
+import ScrollableTabView, {DefaultTabBar, ScrollableTabBar} from 'react-native-scrollable-tab-view';
 
 
 
@@ -46,6 +46,13 @@ class UpdateCarInfo extends Component{
             this.props.onClose();
         }
 
+    }
+
+    uploadLicenseCard(){
+        Alert.alert(
+            'info',
+            '上传行驶证'
+        );
     }
 
     appendCarNumPrefixByCity(val){
@@ -157,7 +164,10 @@ class UpdateCarInfo extends Component{
             city:this.props.city!==undefined&&this.props.city!==null?this.props.city:null,
             carNum:this.props.carNum!==undefined&&this.props.carNum!==null?this.props.carNum:null,
             modalVisible:false,
-            issueDate:null
+            issueDate:null,
+            factoryNum:null,
+            engineNum:null,
+            frameNum:null
         };
     }
 
@@ -218,6 +228,9 @@ class UpdateCarInfo extends Component{
                                 style={{height: 40}}
                                 onChangeText={(carNum) => this.setState({carNum})}
                                 value={this.state.carNum}
+                                placeholder='请输入您的车牌号'
+                                placeholderTextColor="#aaa"
+                                underlineColorAndroid="transparent"
                             />
                         </View>
                     </View>
@@ -234,6 +247,9 @@ class UpdateCarInfo extends Component{
                                 style={{height: 40}}
                                 onChangeText={(ownerName) => this.setState({ownerName})}
                                 value={this.state.ownerName}
+                                placeholder='请输入姓名'
+                                placeholderTextColor="#aaa"
+                                underlineColorAndroid="transparent"
                             />
                         </View>
                     </View>
@@ -250,7 +266,7 @@ class UpdateCarInfo extends Component{
                             <DatePicker
                                 style={{width:200}}
                                 date={this.state.issueDate}
-                                mode="date"
+                                mode="datetime"
                                 placeholder="placeholder"
                                 format="YYYY-MM-DD"
                                 minDate="2016-05-01"
@@ -282,6 +298,82 @@ class UpdateCarInfo extends Component{
                                 }
                             </TouchableOpacity>
                         </View>
+                    </View>
+                    <View style={{flex:1}}>
+                        <ScrollableTabView
+                            style={{marginTop: 20,minHeight:200 }}
+                            initialPage={0}
+                            renderTabBar={() => <ScrollableTabBar />}
+                        >
+                            <View tabLabel='填写信息'>
+
+
+
+                                <View style={[styles.row]}>
+                                    <View style={{flex:2,flexDirection:'row',alignItems:'center'}}>
+                                        <Text style={{'fontSize':13}}>厂牌型号:</Text>
+                                    </View>
+                                    <View style={{flex:6}}>
+                                        <TextInput
+                                            style={{height: 40,borderWidth:0}}
+                                            onChangeText={(factoryNum) => this.setState({factoryNum})}
+                                            value={this.state.factoryNum}
+                                            placeholder='请输入厂牌型号'
+                                            placeholderTextColor="#aaa"
+                                            underlineColorAndroid="transparent"
+                                        />
+                                    </View>
+                                </View>
+
+
+                                <View style={[styles.row]}>
+                                    <View style={{flex:2,flexDirection:'row',alignItems:'center'}}>
+                                        <Text style={{'fontSize':13}}>发动机号:</Text>
+                                    </View>
+                                    <View style={{flex:6}}>
+                                        <TextInput
+                                            style={{height: 40}}
+                                            onChangeText={(engineNum) => this.setState({engineNum})}
+                                            value={this.state.engineNum}
+                                            placeholder='请输入发动机号'
+                                            placeholderTextColor="#aaa"
+                                            underlineColorAndroid="transparent"
+                                        />
+                                    </View>
+                                </View>
+
+
+                                <View style={[styles.row]}>
+                                    <View style={{flex:2,flexDirection:'row',alignItems:'center'}}>
+                                        <Text style={{'fontSize':13}}>车架号:</Text>
+                                    </View>
+                                    <View style={{flex:6}}>
+                                        <TextInput
+                                            style={{height: 40}}
+                                            onChangeText={(frameNum) => this.setState({frameNum})}
+                                            value={this.state.frameNum}
+                                            placeholder='请输入车架号'
+                                            placeholderTextColor="#aaa"
+                                            underlineColorAndroid="transparent"
+                                        />
+                                    </View>
+                                </View>
+
+                            </View>
+                            <View tabLabel='上传行驶证'>
+                                <View style={{padding:10,width:width/2,marginLeft:width/4,flexDirection:'row',justifyContent:'center'}}>
+                                    <Icon.Button name="hand-o-up" backgroundColor="#3b5998" onPress={
+                                            ()=>{
+                                               this.uploadLicenseCard();
+                                            }
+                                        }>
+                                        <Text style={{fontFamily: 'Arial', fontSize: 15,textAlign:'center',color:'#fff'}}>
+                                            上传行驶证
+                                        </Text>
+                                    </Icon.Button>
+                                </View>
+                            </View>
+                        </ScrollableTabView>
                     </View>
 
                     <Modal
