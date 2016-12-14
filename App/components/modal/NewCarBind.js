@@ -175,7 +175,7 @@ class NewCarBind extends Component{
 
     render(){
 
-        var temp=<View style={styles.row}>
+        var temp= <View style={styles.row}>
             <View style={{marginRight:20}}>
                 <Icon name="address-card-o" size={24}/>
             </View>
