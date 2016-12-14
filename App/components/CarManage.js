@@ -38,6 +38,14 @@ class CarManage extends Component{
         this.fetchData();
     }
 
+    carSelect(){
+        var car=null;
+        this.state.data.map(function (item,i) {
+            if(item.checked==true)
+                car=item;
+        });
+        this.goBack();
+    }
 
     setModalVisible(visible) {
         this.setState({modalVisible: visible});
@@ -66,7 +74,7 @@ class CarManage extends Component{
             }else{
                 var data=res.data;
                 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-                this.setState({dataSource: ds.cloneWithRows(data)});
+                this.setState({dataSource: ds.cloneWithRows(data),data:data});
             }
         }, (err) =>{
         });
@@ -75,12 +83,37 @@ class CarManage extends Component{
 
     renderRow(rowData){
 
+        var tickOff=null;
+        if(rowData.idle==true)
+        {
+            tickOff=
+                    <View style={{flex:2}}>
+                        <TouchableOpacity onPress={
+                            function() {
+                          this.state.data.map(function(item,i) {
+                              if(item.carId==rowData.carId)
+                                  item.checked=!item.checked;
+                            });
+                              var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+                            this.setState({dataSource: ds.cloneWithRows(this.state.data),data:this.state.data});
+                        }.bind(this)}>
+                        {
+                            rowData.checked==true?<Icon name="check-square-o" size={30}></Icon>:<Icon name="square-o" size={30}></Icon>
+                        }
+                        </TouchableOpacity>
+                    </View>;
+
+        }else{
+            tickOff=
+                <View style={{flex:2}}>
+                    <Icon name="times" size={30}></Icon>
+                </View>
+        }
+
         var row=
             <View style={{flex:1,padding:10,borderBottomWidth:1,borderBottomColor:'#00f'}}>
                 <View style={{flexDirection:'row',flex:1}}>
-                    <View style={{flex:2}}>
-                        <Icon name="times" size={30}></Icon>
-                    </View>
+                    {tickOff}
                     <View style={{flex:6,flexDirection:'row',alignItems:'flex-end'}}>
                         <View>
                             <Text>{rowData.carNum}</Text>
@@ -117,7 +150,7 @@ class CarManage extends Component{
                     <ListView
                         automaticallyAdjustContentInsets={false}
                         dataSource={this.state.dataSource}
-                        renderRow={this.renderRow}
+                        renderRow={this.renderRow.bind(this)}
                     />
                 </ScrollView>;
         }else{
@@ -135,9 +168,14 @@ class CarManage extends Component{
                     <Text style={{fontSize:17,flex:3,textAlign:'center'}}>
                         车辆管理
                     </Text>
-                    <View style={{flex:1,marginRight:10,flexDirection:'row',justifyContent:'center'}}>
-                        <Icon name="plus-square" size={30} color="#00f" />
-                    </View>
+                    <TouchableOpacity onPress={()=>{
+                        this.carSelect();
+                    }}>
+                        <View style={{flex:1,marginRight:10,flexDirection:'row',justifyContent:'center',backgroundColor:'#11c1f3',
+                                    borderRadius:8,paddingTop:4,paddingBottom:4}}>
+                            <Text style={{color:'#fff',fontSize:12}}>确定选择</Text>
+                        </View>
+                    </TouchableOpacity>
                 </View>
                 <Modal
                     animationType={"slide"}
