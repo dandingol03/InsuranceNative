@@ -20,13 +20,10 @@ import  {
 import Icon from 'react-native-vector-icons/FontAwesome';
 import UpdateCarInfo from '../UpdateCarInfo';
 
-
-
 var {height, width} = Dimensions.get('window');
-
-
 import AppendCarNumPrefixModal from './AppendCarNumPrefixModal';
-
+var Proxy = require('../../proxy/Proxy');
+var Config = require('../../../config');
 
 class NewCarBind extends Component{
 
@@ -36,6 +33,7 @@ class NewCarBind extends Component{
         {
             this.props.onClose();
         }
+        //TODO:关闭时同步数据
 
     }
 
@@ -122,15 +120,147 @@ class NewCarBind extends Component{
 
         //TODO:validate carNum
 
-        const {navigator} =this.props;
-        if(navigator) {
-            navigator.push({
-                name: 'updateCarInfo',
-                component: UpdateCarInfo,
-                params: {
-                    title: 'updateCarInfo'
+        if(this.state.city!==undefined&&this.state.city!==null&&this.state.city!='')
+        {
+            if(this.state.carNum.length==7||this.state.carNum.length==8)
+            {
+                var prefix=this.getCarNumPrefixByCity(this.state.city);
+                if(prefix!=this.state.carNum.substring(0,2))
+                {
+                    Alert.alert(
+                        '错误',
+                        '您输入的车牌号前缀不对，请重新填入车牌号再点击绑定',
+                        [
+                            {text: 'OK', onPress: () => console.log('OK Pressed!')},
+                        ]
+                    );
+                }else{
+
+                    //TODO:invoke a request
+
+                    Proxy.post({
+                        url:Config.server+'/svr/request',
+                        headers: {
+                            'Authorization': "Bearer " + this.state.accessToken,
+                            'Content-Type': 'application/json'
+                        },
+                        body: {
+                            request:'bindNewCar',
+                            info:{
+                                carNum:this.state.carNum
+                            }
+                        }
+                    },(json)=> {
+                        if(json.error)
+                        {
+                            Alert.alert(
+                                'error',
+                                json.error_description
+                            );
+                        }else{
+
+                            switch (json.re) {
+                                case -1:
+                                    Alert.alert(
+                                        '信息',
+                                        '数据库中未保存此车,是否要创建新车',
+                                        [
+                                            {
+                                                text: 'OK', onPress: () => {
+
+                                                const {navigator} =this.props;
+                                                if(navigator) {
+                                                    navigator.push({
+                                                        name: 'updateCarInfo',
+                                                        component: UpdateCarInfo,
+                                                        params: {
+                                                            carNum: this.state.carNum,
+                                                            city:this.state.city
+                                                        }
+                                                    })
+                                                }
+                                                }
+                                            },
+                                            {text: 'Cancel', onPress: () => console.log('OK Pressed!')},
+                                        ]
+                                    )
+                                    break;
+                                case -2:
+                                    Alert.alert(
+                                        '信息',
+                                        '是否要创建新车',
+                                        [
+                                            {text: 'Cancel', onPress: () => console.log('Cancel Pressed!')},
+                                            {text: 'OK', onPress: () =>{
+
+                                                const {navigator} =this.props;
+                                                if(navigator) {
+                                                    navigator.push({
+                                                        name: 'updateCarInfo',
+                                                        component: UpdateCarInfo,
+                                                        params: {
+                                                            title: 'updateCarInfo'
+                                                        }
+                                                    })
+                                                }
+                                            }},
+                                        ]
+                                    )
+                                    break;
+                                case -3:
+                                        Alert.alert(
+                                            '信息',
+                                            '该车还在保险期内,是否要创建新车',
+                                            [{text:'Cancel'},{text:'OK',onPress:()=>{
+                                                const {navigator} =this.props;
+                                                if(navigator) {
+                                                    navigator.push({
+                                                        name: 'updateCarInfo',
+                                                        component: UpdateCarInfo,
+                                                        params: {
+                                                            carNum: this.state.carNum,
+                                                            city:this.state.city
+                                                        }
+                                                    })
+                                                }
+                                            }}]
+                                        )
+                                    break;
+                                case 1:
+                                    var carInfo=json.data;
+                                    Alert.alert('信息','车辆绑定成功',[{text:'OK',onPress:()=>{
+                                        this.close();
+                                        if(this.props.onRefresh!==undefined&&this.props.onRefresh!==null)
+                                            this.props.onRefresh();
+                                    }}])
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    }, (err) =>{
+                    });
+
                 }
-            })
+            }else{
+                Alert.alert(
+                    '错误',
+                    '您填入的车牌号位数不对,请重新填入车牌后点击绑定',
+                    [
+                        {text: 'OK', onPress: () => console.log('OK Pressed!')},
+                    ]
+                );
+                return;
+            }
+
+        }else{
+            Alert.alert(
+                '错误',
+                '请选择用车城市后再点击绑定',
+                [
+                    {text: 'OK', onPress: () => console.log('OK Pressed!')},
+                ]
+            )
         }
 
     }
@@ -166,10 +296,12 @@ class NewCarBind extends Component{
     constructor(props)
     {
         super(props);
+        const {accessToken}=this.props;
         this.state={
             city:null,
             carNum:null,
-            carNumPrefixModal:false
+            carNumPrefixModal:false,
+            accessToken:accessToken
         }
     }
 

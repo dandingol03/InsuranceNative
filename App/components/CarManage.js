@@ -34,6 +34,10 @@ class CarManage extends Component{
         }
     }
 
+    refresh(){
+        this.fetchData();
+    }
+
 
     setModalVisible(visible) {
         this.setState({modalVisible: visible});
@@ -47,7 +51,10 @@ class CarManage extends Component{
                 'Content-Type': 'application/json'
             },
             body: {
-                request:'fetchInsuranceCarInfoByCustomerId'
+                request:'fetchInsuranceCarInfoByCustomerId',
+                info:{
+                    carNum:''
+                }
             }
         },(res)=> {
             if(res.error)
@@ -144,6 +151,10 @@ class CarManage extends Component{
                             this.setModalVisible(!this.state.modalVisible)
                         }}
                         navigator={this.props.navigator}
+                        onRefresh={()=>{
+                            this.refresh();
+                        }}
+                        accessToken={this.props.accessToken}
                     />
 
                 </Modal>

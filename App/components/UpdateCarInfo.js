@@ -24,6 +24,10 @@ import { connect } from 'react-redux';
 import Config from '../../config';
 var {height, width} = Dimensions.get('window');
 import { AppRegistry, TextInput } from 'react-native';
+import AppendCarNumPrefixModal from './modal/AppendCarNumPrefixModal';
+import DatePicker from 'react-native-datepicker';
+
+
 
 
 class UpdateCarInfo extends Component{
@@ -44,6 +48,78 @@ class UpdateCarInfo extends Component{
 
     }
 
+    appendCarNumPrefixByCity(val){
+        this.setState({modalVisible:val})
+    }
+
+    getCarNumPrefixByCity(city)
+    {
+        var carNum=null;
+        switch (city) {
+            case '济南':
+                carNum='鲁A';
+                break;
+            case '青岛':
+                carNum='鲁B';
+                break;
+            case '淄博':
+                carNum='鲁C';
+                break;
+            case '枣庄':
+                carNum='鲁D';
+                break;
+            case '东营':
+                carNum='鲁E';
+                break;
+            case '烟台':
+                carNum='鲁F';
+                break;
+            case '潍坊':
+                carNum='鲁G';
+                break;
+            case '济宁':
+                carNum='鲁H';
+                break;
+            case '泰安':
+                carNum='鲁J';
+                break;
+            case '威海':
+                carNum='鲁K';
+                break;
+            case '日照':
+                carNum='鲁L';
+                break;
+            case '滨州':
+                carNum='鲁M';
+                break;
+            case '德州':
+                carNum='鲁N';
+                break;
+            case '聊城':
+                carNum='鲁P';
+                break;
+            case '临沂':
+                carNum='鲁Q';
+                break;
+            case '菏泽':
+                carNum='鲁R';
+                break;
+            case '莱芜':
+                carNum='鲁S';
+                break;
+            default:
+                break;
+        }
+        return carNum;
+    }
+
+
+
+    cityConfirm(city){
+        //TODO:filter the city prefix
+        var prefix=this.getCarNumPrefixByCity(city);
+        this.setState({modalVisible: false,city:city,carNum:prefix});
+    }
 
     fetchData(){
         Proxy.post({
@@ -78,8 +154,10 @@ class UpdateCarInfo extends Component{
         const { accessToken } = this.props;
         this.state = {
             accessToken: accessToken,
-            city:null,
-            carNum:null
+            city:this.props.city!==undefined&&this.props.city!==null?this.props.city:null,
+            carNum:this.props.carNum!==undefined&&this.props.carNum!==null?this.props.carNum:null,
+            modalVisible:false,
+            issueDate:null
         };
     }
 
@@ -121,7 +199,7 @@ class UpdateCarInfo extends Component{
                         <View style={{flex:1,flexDirection:'row',alignItems:'center'}}>
                             <TouchableOpacity onPress={
                                     ()=>{
-                                        this.appendCarNumPrefixByCity(true);
+                                        this.appendCarNumPrefixByCity(!this.state.modalVisible)
                                     }}>
                                 <Icon name="chevron-right" size={20}/>
                             </TouchableOpacity>
@@ -160,16 +238,30 @@ class UpdateCarInfo extends Component{
                         </View>
                     </View>
 
-                    <View style={[styles.row,{alignItems:'center',padding:10,paddingLeft:0,paddingRight:0}]}>
+                    <View style={[styles.row,{alignItems:'center',padding:4,paddingLeft:0,paddingRight:0}]}>
                         <View style={{flex:1,marginRight:20,justifyContent:'center'}}>
                             <Icon name="calendar" size={20}/>
                         </View>
                         <View style={{flex:2,flexDirection:'row',alignItems:'center'}}>
-                            <Text style={{'fontSize':13}}>发证日期:</Text>
+                            <Text style={{'fontSize':13}}>注册日期:</Text>
                         </View>
-                        <View style={{flex:6,flexDirection:'row',alignItems:'center'}}>
-                            <Text>{this.state.carNum}</Text>
+
+                        <View style={{flex:6,flexDirection:'row',justifyContent:'center'}}>
+                            <DatePicker
+                                style={{width:200}}
+                                date={this.state.issueDate}
+                                mode="date"
+                                placeholder="placeholder"
+                                format="YYYY-MM-DD"
+                                minDate="2016-05-01"
+                                maxDate="2016-12-30"
+                                confirmBtnText="Confirm"
+                                cancelBtnText="Cancel"
+                                iconSource={require('../img/google_calendar.png')}
+                                onDateChange={(date) => {this.setState({issueDate: date});}}
+                            />
                         </View>
+
                     </View>
 
                     <View style={[styles.row,{alignItems:'center',padding:4,paddingLeft:0,paddingRight:0}]}>
@@ -192,10 +284,22 @@ class UpdateCarInfo extends Component{
                         </View>
                     </View>
 
+                    <Modal
+                        animationType={"slide"}
+                        transparent={false}
+                        visible={this.state.modalVisible}
+                        onRequestClose={() => {alert("Modal has been closed.")}}
+                    >
 
-
-
-
+                        <AppendCarNumPrefixModal
+                            onClose={()=>{
+                            this.appendCarNumPrefixByCity(!this.state.modalVisible)
+                        }}
+                            onConfirm={(city)=>{
+                            this.cityConfirm(city);
+                        }}
+                        />
+                    </Modal>
                 </View>
 
             </View>);
