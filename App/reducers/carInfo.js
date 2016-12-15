@@ -3,7 +3,7 @@
 import * as types from '../action/types';
 
 const initialState = {
-    bindList: [],
+    carSelect: null,
     orders:[]
 };
 
@@ -11,10 +11,10 @@ let user = (state = initialState, action) => {
 
     switch (action.type) {
 
-        case types.FETCH_CUSTOMER_CARINFO:
+        case types.SELECT_CUSTOMER_CAR:
 
             return Object.assign({}, state, {
-                bindList: action.bindList
+                carSelect: action.car
             })
         case types.FETCH_CAR_ORDERS:
             return Object.assign({}, state, {

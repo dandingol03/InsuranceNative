@@ -54,3 +54,10 @@ let getAccessToken= (accessToken)=>{
             auth:'failed'
         }
 }
+
+export let selectCarAction=function(car){
+    return {
+        type:types.SELECT_CUSTOMER_CAR,
+        car:car
+    }
+}

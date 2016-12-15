@@ -23,6 +23,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 var Proxy = require('../proxy/Proxy');
 import { connect } from 'react-redux';
 import NewCarBind from './modal/NewCarBind';
+import {selectCarAction} from '../action/actionCreator';
 import Config from '../../config';
 var {height, width} = Dimensions.get('window');
 
@@ -39,13 +40,55 @@ class CarManage extends Component{
         this.fetchData();
     }
 
+    search(){
+        if(this.state.filter!==undefined&&this.state.filter!==null&&this.state.filter!='')
+        {
+            Proxy.post({
+                url:Config.server+'/svr/request',
+                headers: {
+                    'Authorization': "Bearer " + this.state.accessToken,
+                    'Content-Type': 'application/json'
+                },
+                body: {
+                    request:'fetchInsuranceCarInfoByCustomerId',
+                    info:{
+                        carNum:this.state.filter
+                    }
+                }
+            },(res)=> {
+                if(res.error)
+                {
+                    Alert.alert(
+                        'error',
+                        res.error_description
+                    );
+                }else{
+                    var data=res.data;
+                    var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+                    this.setState({dataSource: ds.cloneWithRows(data),data:data});
+                }
+            }, (err) =>{
+            });
+        }else{
+            Alert.alert(
+                'info',
+                '请输入搜索条件后再点击搜索'
+            );
+        }
+    }
+
     carSelect(){
         var car=null;
         this.state.data.map(function (item,i) {
             if(item.checked==true)
                 car=item;
         });
-        this.goBack();
+        if(car!==undefined&&car!==null)
+        {
+            const {dispatch} = this.props;
+            dispatch(selectCarAction(car));
+            this.goBack();
+        }
     }
 
     setModalVisible(visible) {
@@ -62,7 +105,7 @@ class CarManage extends Component{
             body: {
                 request:'fetchInsuranceCarInfoByCustomerId',
 
-                info:{carNum:this.state.carNum}
+                info:{carNum:''}
             }
         },(res)=> {
             if(res.error)
@@ -135,7 +178,9 @@ class CarManage extends Component{
         super(props);
         const { accessToken } = this.props;
         this.state = {
-            accessToken: accessToken,modalVisible:false,carNum:null};
+            accessToken: accessToken,modalVisible:false,carNum:null,
+            filter:null
+        };
     }
 
     render(){
@@ -170,9 +215,9 @@ class CarManage extends Component{
                     </Text>
                     <TouchableOpacity onPress={()=>{
                         this.carSelect();
-                    }}>
+                        }}>
                         <View style={{flex:1,marginRight:10,flexDirection:'row',justifyContent:'center',backgroundColor:'#11c1f3',
-                                    borderRadius:8,paddingTop:4,paddingBottom:4}}>
+                                    borderRadius:8,paddingTop:4,paddingBottom:4,paddingLeft:10,paddingRight:10,alignItems:'center'}}>
                             <Text style={{color:'#fff',fontSize:12}}>确定选择</Text>
                         </View>
                     </TouchableOpacity>
@@ -197,22 +242,25 @@ class CarManage extends Component{
 
                 </Modal>
 
-                <View style={{flex:1,paddingLeft:20,paddingRight:20,paddingTop:10,paddingBottom:10}}>
-                    <View style={styles.row}>
-                        <View style={{flex:2,flexDirection:'row',alignItems:'flex-end'}}>
+                <View style={{flex:2,paddingLeft:20,paddingRight:20,paddingTop:4,paddingBottom:4,alignItems:'center',flexDirection:'row'}}>
+                    <View style={{flexDirection:'row',alignItems:'center',borderBottomWidth:1}}>
+                        <View style={{flex:2,flexDirection:'row',alignItems:'center'}}>
                             <Text style={{'fontSize':16}}> 车牌:</Text>
                         </View>
-                        <View style={{flex:6}}>
+                        <View style={{flex:5}}>
                             <TextInput
-                                style={{height: 40}}
-                                onChangeText={(carNum) => this.setState({carNum})}
-                                value={this.state.carNum}
+                                style={{height: 42}}
+                                onChangeText={(filter) => this.setState({filter})}
+                                value={this.state.filter}
+                                placeholder='请输入您要搜索的车牌号'
+                                placeholderTextColor="#aaa"
+                                underlineColorAndroid="transparent"
                             />
                         </View>
 
-                        <View style={{flex:2,marginTop:15,textAlign:'center'}}>
+                        <View style={{flex:2,flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
                             <TouchableOpacity onPress={()=>{
-                        this.goBack();
+                                    this.search();
                             }}>
                                 <Icon name="search" size={20}/>
                             </TouchableOpacity>
@@ -220,7 +268,7 @@ class CarManage extends Component{
                     </View>
                 </View>
 
-                <View style={{flex:4,padding:15}}>
+                <View style={{flex:14,padding:15}}>
                     {listView}
                 </View>
 

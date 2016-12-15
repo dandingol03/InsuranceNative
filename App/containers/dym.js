@@ -21,7 +21,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import FacebookTabBar from '../components/FacebookTabBar';
 import ScrollableTabView,{DefaultTabBar} from 'react-native-scrollable-tab-view';
 import CarManage from '../components/CarManage';
-
+import CarInsuranceMeal from '../components/CarInsuranceMeal';
 var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
 
@@ -30,7 +30,7 @@ var {height, width} = Dimensions.get('window');
 class dym extends Component{
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state={};
     }
 
     carSelect(){
@@ -47,7 +47,29 @@ class dym extends Component{
         }
     }
 
+    mealSelect(){
+        const {navigator} =this.props;
+        if(navigator) {
+            navigator.push({
+                name: 'carManage',
+                component: CarInsuranceMeal,
+                params: {
+                    title: 'CarInsuranceMeal'
+                }
+            })
+        }
+    }
+
+
     render() {
+
+        var carInfo=null;
+        const {carSelect}=this.props;
+        if(carSelect!==undefined&&carSelect!==null)
+            carInfo=
+                <Text>
+                    {carSelect.carNum}
+                </Text>;
 
         var scrollTab=
             <ScrollableTabView
@@ -61,13 +83,13 @@ class dym extends Component{
                 </View>
 
                 <View style={{flex:2,padding:10,justifyContent:'center'}}>
-                    <View style={{borderBottomWidth:1,borderBottomColor:'#222',flexDirection:'row'}}>
-                        <View style={{flex:3,paddingTop:8,justifyContent:'center',
-                                    flexDirection:'row',paddingBottom:4,alignItems:'flex-end'}}>
+                    <View style={{borderBottomWidth:1,borderBottomColor:'#222',flexDirection:'row',alignItems:'center'}}>
+                        <View style={{flex:2,paddingTop:8,
+                                    flexDirection:'row',paddingBottom:4}}>
                             <Text>车牌:</Text>
                         </View>
                         <View style={{flex:3}}>
-
+                            {carInfo}
                         </View>
 
                         <View style={{flex:4,justifyContent:'center'}}>
@@ -81,6 +103,17 @@ class dym extends Component{
                         </View>
 
                     </View>
+                </View>
+                <View style={{padding:10,flexDirection:'row',justifyContent:'center'}}>
+                    <TouchableOpacity onPress={()=>{
+                        this.mealSelect();
+                        }}>
+                        <View style={{flex:1,marginRight:10,flexDirection:'row',justifyContent:'center',backgroundColor:'#11c1f3',
+                                    borderRadius:8,paddingTop:8,paddingBottom:8,paddingLeft:8,paddingRight:8,alignItems:'center'
+                                    ,width:width/3}}>
+                            <Text style={{color:'#fff',fontSize:12}}>选择套餐</Text>
+                        </View>
+                    </TouchableOpacity>
                 </View>
             </ScrollView>
             <ScrollView tabLabel="ios-people" style={styles.tabView}>
@@ -158,6 +191,8 @@ var styles = StyleSheet.create({
 });
 
 
-module.exports = connect(
+module.exports = connect(state=>({
+        carSelect:state.carInfo.carSelect
+    })
 )(dym);
 
