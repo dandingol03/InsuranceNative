@@ -221,6 +221,7 @@ class CarManage extends Component{
                             <Text style={{color:'#fff',fontSize:12}}>确定选择</Text>
                         </View>
                     </TouchableOpacity>
+
                 </View>
                 <Modal
                     animationType={"slide"}
