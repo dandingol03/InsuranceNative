@@ -9,7 +9,7 @@ import Config from '../../config';
 var Proxy = require('../proxy/Proxy');
 
 
-export let loginAction=function(username,password){
+export let loginAction=function(username,password,cb){
 
     return dispatch=>{
 
@@ -25,13 +25,39 @@ export let loginAction=function(username,password){
         },(res)=> {
             var accessToken=res.access_token;
             dispatch(getAccessToken(accessToken));
+            dispatch(clearTimerAction());
+            if(cb)
+                cb();
         }, (err) =>{
-                dispatch(getAccessToken(null));
+            dispatch(getAccessToken(null));
+            dispatch(clearTimerAction());
+            if(cb)
+                cb();
             });
     };
 
 
 }
+
+
+export let setTimerAction=function (timer) {
+    return dispatch=>{
+        dispatch({
+            type: types.TIMER_SET,
+            timer:timer
+        });
+    };
+}
+
+export let clearTimerAction=function () {
+    return dispatch=>{
+        dispatch({
+            type: types.TIMER_CLEAR
+        });
+    };
+}
+
+
 
 let onOauth= () => {
     return {

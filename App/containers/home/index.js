@@ -19,6 +19,7 @@ import { connect } from 'react-redux';
 var {height, width} = Dimensions.get('window');
 import Icon from 'react-native-vector-icons/FontAwesome';
 
+import CarManage from '../car_manage/index';
 
 class Home extends Component{
 
@@ -26,6 +27,18 @@ class Home extends Component{
         const { navigator } = this.props;
         if(navigator) {
             navigator.pop();
+        }
+    }
+
+    navigate2CarManage(){
+        const { navigator } = this.props;
+        if(navigator) {
+            navigator.push({
+                name: 'car_manage',
+                component: CarManage,
+                params: {
+                }
+            })
         }
     }
 
@@ -210,8 +223,8 @@ class Home extends Component{
                         <View  style={[styles.row]}>
                             <TouchableOpacity style={{flex:1,justifyContent:'center',alignItems:'center'}}
                                               onPress={ ()=>{
-
-                                                }}>
+                                                    this.navigate2CarManage();
+                                              }}>
                                 <Image style={[styles.module]} source={require('../../img/car@2x.png')}/>
                                 <View style={{marginTop:0,padding:12}}>
                                     <Text style={{fontSize:18,color:'#222'}}>车险</Text>

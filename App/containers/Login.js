@@ -27,17 +27,45 @@ import { connect } from 'react-redux';
 var {height, width} = Dimensions.get('window');
 import {BoxShadow} from 'react-native-shadow';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {loginAction} from '../action/actionCreator';
+import {loginAction,setTimerAction} from '../action/actionCreator';
 var Proxy = require('../proxy/Proxy');
 
 
 var  Login =React.createClass({
     onLoginPressed:function () {
 
-        this.setState({showProgress: true});
+
         const {dispatch} = this.props;
         var {user}=this.state;
-        dispatch(loginAction(user.username,user.password));
+        if(user.username!==undefined&&user.username!==null)
+        {
+            if(user.password!==undefined&&user.password!==null)
+            {
+                this.setState({showProgress: true,modalVisible:true});
+                const {dispatch} = this.props;
+                this.timer= setInterval(
+
+                    function () {
+
+                        var loginDot=this.state.loginDot;
+                        if(loginDot=='......')
+                            loginDot='.';
+                        else
+                            loginDot+='.';
+
+                        this.setState({loginDot:loginDot});
+
+                    }.bind(this)
+                    ,
+                    600,
+                );
+                dispatch(setTimerAction(this.timer));
+                dispatch(loginAction(user.username,user.password,function () {
+                    this.setState({showProgress: false,user:{}});
+                }.bind(this)));
+            }
+        }else{}
+
     },
     onPress:function () {
         var form = this.refs.form.getValue();
