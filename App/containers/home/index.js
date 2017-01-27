@@ -208,12 +208,15 @@ class Home extends Component{
                 <Image style={{width:width,height:height-290}} source={require('../../img/bkg1@2x.png')}>
                     <View style={{padding:20}}>
                         <View  style={[styles.row]}>
-                            <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                            <TouchableOpacity style={{flex:1,justifyContent:'center',alignItems:'center'}}
+                                              onPress={ ()=>{
+
+                                                }}>
                                 <Image style={[styles.module]} source={require('../../img/car@2x.png')}/>
                                 <View style={{marginTop:0,padding:12}}>
                                     <Text style={{fontSize:18,color:'#222'}}>车险</Text>
                                 </View>
-                            </View>
+                            </TouchableOpacity>
 
                             <TouchableOpacity style={{flex:1,justifyContent:'center',alignItems:'center'}}
                                               onPress={ ()=>{

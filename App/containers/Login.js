@@ -33,11 +33,11 @@ var Proxy = require('../proxy/Proxy');
 
 var  Login =React.createClass({
     onLoginPressed:function () {
-        console.log('attempting to log in with username: ' + this.state.username);
+
         this.setState({showProgress: true});
         const {dispatch} = this.props;
-
-        dispatch(loginAction(this.state.username,this.state.password));
+        var {user}=this.state;
+        dispatch(loginAction(user.username,user.password));
     },
     onPress:function () {
         var form = this.refs.form.getValue();
