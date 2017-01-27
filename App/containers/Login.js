@@ -69,48 +69,6 @@ var  Login =React.createClass({
         }
 
 
-
-        var t1=
-            <View style={styles.container}>
-                <Text style={styles.heading}>
-                    Github Browser
-                </Text>
-                <Image style={styles.logo} source={require('../img/Octocat.png')} />
-
-                <View style={{justifyContent:'center',alignItems:'center'}}>
-                    <TextInput
-                        onChangeText={(text) => this.setState({username: text})}
-                        style={styles.input}
-                        placeholder='请输入用户名'
-                        placeholderTextColor="#aaa"
-                        underlineColorAndroid="transparent"
-                    />
-                </View>
-
-                <View style={{justifyContent:'center',alignItems:'center'}}>
-                    <TextInput
-                        onChangeText={(text) => this.setState({password: text})}
-                        style={styles.input}
-                        placeholder="input password"
-                        secureTextEntry={true} />
-                </View>
-
-                <View style={{justifyContent:'center',alignItems:'center'}}>
-                    <TouchableHighlight
-                        onPress={this.onLoginPressed}
-                        style={styles.button}>
-                        <Text style={styles.buttonText}>
-                            登录
-                        </Text>
-                    </TouchableHighlight>
-                </View>
-
-                <ActivityIndicator
-                    animating={this.state.showProgress}
-                    style={[styles.loader, {height: 80}]}
-                    size="large"
-                />
-            </View>;
         return (
             <View style={[styles.container]}>
 

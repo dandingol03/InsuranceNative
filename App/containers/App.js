@@ -21,7 +21,7 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 
 import ScrollableTabView, {DefaultTabBar, ScrollableTabBar} from 'react-native-scrollable-tab-view';
 
-import Home from './Home';
+import Home from './home/index';
 import Me from './Me';
 import GaHome from './GaHome';
 import GaOrder from './GaOrder';
@@ -38,7 +38,7 @@ class App extends React.Component {
         super(props);
         this.state={
             tab:'product',
-            selectedTab:'product'
+            selectedTab:'home'
         }
     }
 
@@ -47,16 +47,10 @@ class App extends React.Component {
 
         var component=Home;
         switch (route) {
+            case 'home':
+                break;
             case 'me':
                 component=Me;
-                break;
-            case 'product':
-                break;
-            case 'ga':
-                component=GaHome;
-                break;
-            case 'gaOrder':
-                component=GaOrder;
                 break;
             case 'dym':
                 component=dym;
@@ -144,25 +138,12 @@ class App extends React.Component {
         if(auth==true)
         {
 
-            var TabBarIOS=
-                <TabBarIOS
-                    ref='tabbar'
-                    tintColor={tabTintColor}
-                    barTintColor={tabBarTintColor}>
-                    {this._createTabbarItem('product','dribbble')}
-                    {this._createTabbarItem('me','trophy')}
-                    {this._createTabbarItem('ga','meetup')}
-                    {this._createTabbarItem('gaOrder','list-alt')}
-                    {this._createTabbarItem('dym','list-alt')}
-                </TabBarIOS>;
+
 
 
             return (
                 <TabNavigator>
-                    {this._createNavigatorItem('product','home')}
-                    {this._createNavigatorItem('me','trophy')}
-                    {this._createNavigatorItem('ga','meetup')}
-                    {this._createNavigatorItem('gaOrder','list-alt')}
+                    {this._createNavigatorItem('home','home')}
                     {this._createNavigatorItem('dym','car')}
                 </TabNavigator>
             );
