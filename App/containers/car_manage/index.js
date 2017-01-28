@@ -15,7 +15,8 @@ import  {
     Dimensions,
     TextInput,
     ScrollView,
-    Alert
+    Alert,
+    Modal
 } from 'react-native';
 
 import { connect } from 'react-redux';
@@ -25,6 +26,9 @@ import CheckBox from 'react-native-check-box';
 import _ from 'lodash';
 import Config from '../../../config';
 import Proxy from '../../proxy/Proxy';
+import NewCarBind from '../../components/modal/NewCarBind';
+import UpdateCarInfo from '../../components/UpdateCarInfo';
+
 
 class CarManage extends Component{
 
@@ -108,17 +112,60 @@ class CarManage extends Component{
     }
 
 
+    navigate2NewCarCreate(carNum,city)
+    {
+
+        const {navigator} =this.props;
+        if(navigator) {
+            navigator.push({
+                name: 'updateCarInfo',
+                component: UpdateCarInfo,
+                params: {
+                    carNum: carNum,
+                    city:city
+                }
+            })
+        }
+    }
+
+    bindNewCar(carNum,cb)
+    {
+        var {accessToken}=this.props;
+        Proxy.post({
+            url:Config.server+'/svr/request',
+            headers: {
+                'Authorization': "Bearer " + accessToken,
+                'Content-Type': 'application/json'
+            },
+            body: {
+                request:'bindNewCar',
+                info:{
+                    carNum:carNum
+                }
+            }
+        },(json)=> {
+            if(json.error)
+            {
+                Alert.alert(
+                    'error',
+                    json.error_description
+                );
+            }else{
+                if(cb!==undefined&&cb!==null)
+                    cb(json.re,json.data);
+            }
+        }, (err) =>{
+        });
+    }
+
+
     renderRow(rowData,sectionId,rowId){
 
         var lineStyle=null;
-        if(parseInt(rowId)%2==0)
-        {
-            lineStyle={flex:1,flexDirection:'row',padding:8,borderBottomWidth:1,borderLeftWidth:1,borderRightWidth:1,
-                borderColor:'#ddd',justifyContent:'flex-start',backgroundColor:'#C4D9FF'};
-        }else{
-            lineStyle={flex:1,flexDirection:'row',padding:8,borderBottomWidth:1,borderLeftWidth:1,borderRightWidth:1,
-                borderColor:'#ddd',justifyContent:'flex-start',backgroundColor:'#fff'}
-        }
+
+        lineStyle={flex:1,flexDirection:'row',padding:4,borderBottomWidth:1,
+                borderColor:'#ddd',justifyContent:'flex-start',backgroundColor:'transparent'}
+
 
         var prefer=null;
 
@@ -128,7 +175,7 @@ class CarManage extends Component{
             {
 
                 prefer=<CheckBox
-                    style={{padding: 8,flex:1,justifyContent:'center',flexDirection:'row',alignItems:'center'}}
+                    style={{padding: 2,flex:1,justifyContent:'center',flexDirection:'row',alignItems:'center'}}
                     onClick={()=>{
                       var bindedCars=_.cloneDeep(this.state.bindedCars);
                       bindedCars.map(function(car,i) {
@@ -142,7 +189,7 @@ class CarManage extends Component{
                 />;
             }else{
                 prefer=<CheckBox
-                    style={{ padding: 8,flex:1,justifyContent:'center',flexDirection:'row',alignItems:'center'}}
+                    style={{ padding: 2,flex:1,justifyContent:'center',flexDirection:'row',alignItems:'center'}}
                     onClick={()=>{
                       var bindedCars=_.cloneDeep(this.state.bindedCars);
                       bindedCars.map(function(car,i) {
@@ -159,7 +206,7 @@ class CarManage extends Component{
         }else{
             prefer=
                 <View style={{flex:1,padding:8,justifyContent:'center',flexDirection:'row'}}>
-                    <Text style={{color:'#ff5c3c'}}>已申请</Text>
+                    <Text style={{color:'#ff5c3c',fontSize:16}}>已申请</Text>
                 </View>;
 
         }
@@ -175,12 +222,12 @@ class CarManage extends Component{
                             {prefer}
                         </View>
 
-                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:8}}>
+                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:2}}>
                            <View>
                                <Text style={{color:'#000',fontSize:18}}>
                                    车牌号:{rowData.carNum}
                                </Text>
-                               <Text style={{color:'#000',fontSize:18}}>
+                               <Text style={{color:'#000',fontSize:17}}>
                                    车主姓名 :{rowData.ownerName}
                                </Text>
                            </View>
@@ -239,7 +286,8 @@ class CarManage extends Component{
             bindedCars:[],
             selectAll:false,
             dataSource : null,
-            accessToken: accessToken
+            accessToken: accessToken,
+            modalVisible:false
         };
     }
 
@@ -270,7 +318,7 @@ class CarManage extends Component{
 
         return (
             <View style={{flex:1}}>
-                <View style={[{padding: 10,marginTop:20,justifyContent: 'center',alignItems: 'center',flexDirection:'row'},styles.card]}>
+                <View style={[{padding: 10,marginTop:20,justifyContent: 'center',alignItems: 'center',flexDirection:'row',height:44},styles.card]}>
                     <TouchableOpacity onPress={()=>{
                         this.goBack();
                     }}>
@@ -284,7 +332,7 @@ class CarManage extends Component{
                         }}>
                         <View style={{flex:1,marginRight:10,flexDirection:'row',justifyContent:'center',backgroundColor:'#11c1f3',
                                     borderRadius:8,paddingTop:8,paddingBottom:8,paddingLeft:10,paddingRight:10,alignItems:'center'}}>
-                            <Icon name="refresh" size={26} color="#fff"></Icon>
+                            <Icon name="refresh" size={24} color="#fff"></Icon>
                         </View>
                     </TouchableOpacity>
 
@@ -292,7 +340,7 @@ class CarManage extends Component{
 
 
                 {/*body*/}
-                <View style={{padding:10}}>
+                <View style={{padding:10,height:70}}>
 
                     <View style={[styles.row,{borderBottomWidth:0}]}>
                         <View style={{flex:1,borderWidth:1,borderColor:'#ddd'}}>
@@ -309,15 +357,59 @@ class CarManage extends Component{
                             />
                         </View>
                         <View style={{width:60,flexDirection:'row',justifyContent:'center',alignItems:'center',backgroundColor:'#00c9ff'}}>
-                            <Icon size={23} color="#fff" name="search"></Icon>
+                            <Icon size={21} color="#fff" name="search"></Icon>
                         </View>
                     </View>
+
+
                 </View>
 
 
-                <View style={{flex:14,padding:15}}>
+                <View style={{padding:15,height:height-274}}>
                     {listView}
                 </View>
+
+                <TouchableOpacity style={[styles.row,{borderBottomWidth:0,backgroundColor:'#00c9ff',width:width*3/5,marginLeft:width/5,
+                        padding:10,borderRadius:10,justifyContent:'center'}]}
+                                  onPress={()=>{
+                                         this.setState({modalVisible:true});
+                                      }}>
+                    <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
+                        <Text style={{color:'#fff',fontSize:19}}>创建新车</Text>
+                    </View>
+                </TouchableOpacity>
+
+
+
+                <Modal
+                    animationType={"slide"}
+                    transparent={false}
+                    visible={this.state.modalVisible}
+                    onRequestClose={() => {
+                        console.log("Modal has been closed.");
+                    }}
+                >
+
+                    <NewCarBind
+                        onClose={()=>{
+                            this.setState({modalVisible:!this.state.modalVisible});
+                        }}
+                        bindNewCar={
+                            (carNum,cb)=>{
+                                   this.bindNewCar(carNum,cb);
+                            }
+                        }
+                        navigate2NewCarCreate={
+                            (carNum,city)=>{this.navigate2NewCarCreate(carNum,city);}
+                        }
+                        onRefresh={()=>{
+                            this.refresh();
+                        }}
+                        accessToken={this.props.accessToken}
+                    />
+
+                </Modal>
+
 
             </View>);
     }

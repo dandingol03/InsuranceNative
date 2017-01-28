@@ -113,10 +113,10 @@ class NewCarBind extends Component{
     bindCar()
     {
 
-        if(this.props.onClose!==undefined&&this.props.onClose!==null)
-        {
-            this.props.onClose();
-        }
+        // if(this.props.onClose!==undefined&&this.props.onClose!==null)
+        // {
+        //     this.props.onClose();
+        // }
 
         //TODO:validate carNum
 
@@ -137,29 +137,11 @@ class NewCarBind extends Component{
                 }else{
 
                     //TODO:invoke a request
-
-                    Proxy.post({
-                        url:Config.server+'/svr/request',
-                        headers: {
-                            'Authorization': "Bearer " + this.state.accessToken,
-                            'Content-Type': 'application/json'
-                        },
-                        body: {
-                            request:'bindNewCar',
-                            info:{
-                                carNum:this.state.carNum
-                            }
-                        }
-                    },(json)=> {
-                        if(json.error)
-                        {
-                            Alert.alert(
-                                'error',
-                                json.error_description
-                            );
-                        }else{
-
-                            switch (json.re) {
+                    if(this.props.bindNewCar!==undefined&&this.props.bindNewCar!==null)
+                    {
+                        this.props.bindNewCar(this.state.carNum,function (re,data) {
+                            switch (re)
+                            {
                                 case -1:
                                     Alert.alert(
                                         '信息',
@@ -168,23 +150,19 @@ class NewCarBind extends Component{
                                             {
                                                 text: 'OK', onPress: () => {
 
-                                                const {navigator} =this.props;
-                                                if(navigator) {
-                                                    navigator.push({
-                                                        name: 'updateCarInfo',
-                                                        component: UpdateCarInfo,
-                                                        params: {
-                                                            carNum: this.state.carNum,
-                                                            city:this.state.city
-                                                        }
-                                                    })
+                                                if(this.props.navigate2NewCarCreate!==undefined&&this.props.navigate2NewCarCreate!==null)
+                                                {
+                                                    if(this.props.onClose!==undefined&&this.props.onClose!==null)
+                                                        this.props.onClose();
+                                                    this.props.navigate2NewCarCreate(this.state.carNum,this.state.city);
                                                 }
-                                                }
+                                            }
                                             },
                                             {text: 'Cancel', onPress: () => console.log('OK Pressed!')},
                                         ]
                                     )
                                     break;
+
                                 case -2:
                                     Alert.alert(
                                         '信息',
@@ -193,43 +171,35 @@ class NewCarBind extends Component{
                                             {text: 'Cancel', onPress: () => console.log('Cancel Pressed!')},
                                             {text: 'OK', onPress: () =>{
 
-                                                const {navigator} =this.props;
-                                                if(navigator) {
-                                                    navigator.push({
-                                                        name: 'updateCarInfo',
-                                                        component: UpdateCarInfo,
-                                                        params: {
-                                                            title: 'updateCarInfo'
-                                                        }
-                                                    })
+                                                if(this.props.navigate2NewCarCreate!==undefined&&this.props.navigate2NewCarCreate!==null)
+                                                {
+                                                    if(this.props.onClose!==undefined&&this.props.onClose!==null)
+                                                        this.props.onClose();
+                                                    this.props.navigate2NewCarCreate(this.state.carNum,this.state.city);
                                                 }
                                             }},
                                         ]
                                     )
                                     break;
                                 case -3:
-                                        Alert.alert(
-                                            '信息',
-                                            '该车还在保险期内,是否要创建新车',
-                                            [{text:'Cancel'},{text:'OK',onPress:()=>{
-                                                const {navigator} =this.props;
-                                                if(navigator) {
-                                                    navigator.push({
-                                                        name: 'updateCarInfo',
-                                                        component: UpdateCarInfo,
-                                                        params: {
-                                                            carNum: this.state.carNum,
-                                                            city:this.state.city
-                                                        }
-                                                    })
-                                                }
-                                            }}]
-                                        )
+                                    Alert.alert(
+                                        '信息',
+                                        '该车还在保险期内,是否要创建新车',
+                                        [{text:'Cancel'},{text:'OK',onPress:()=>{
+                                            if(this.props.navigate2NewCarCreate!==undefined&&this.props.navigate2NewCarCreate!==null)
+                                            {
+                                                if(this.props.onClose!==undefined&&this.props.onClose!==null)
+                                                    this.props.onClose();
+                                                this.props.navigate2NewCarCreate(this.state.carNum,this.state.city);
+                                            }
+                                        }}]
+                                    )
                                     break;
                                 case 1:
-                                    var carInfo=json.data;
+
                                     Alert.alert('信息','车辆绑定成功',[{text:'OK',onPress:()=>{
-                                        this.close();
+                                        if(this.props.onClose!==undefined&&this.props.onClose!==null)
+                                            this.props.onClose();
                                         if(this.props.onRefresh!==undefined&&this.props.onRefresh!==null)
                                             this.props.onRefresh();
                                     }}])
@@ -237,9 +207,8 @@ class NewCarBind extends Component{
                                 default:
                                     break;
                             }
-                        }
-                    }, (err) =>{
-                    });
+                        }.bind(this));
+                    }
 
                 }
             }else{
@@ -307,19 +276,7 @@ class NewCarBind extends Component{
 
     render(){
 
-        var temp= <View style={styles.row}>
-            <View style={{marginRight:20}}>
-                <Icon name="address-card-o" size={24}/>
-            </View>
-            <View style={{flex:2,flexDirection:'row',alignItems:'flex-end'}}>
-                <Text style={{'fontSize':16}}> 车牌:</Text>
-            </View>
-            <View style={{flex:2}}>
-                <Text>{this.state.carNum}</Text>
-            </View>
-            <View style={{flex:1}}>
-            </View>
-        </View>;
+
 
 
         return (
@@ -351,16 +308,20 @@ class NewCarBind extends Component{
 
                 <View style={{flex:2,padding:10}}>
                     <View style={styles.row}>
-                        <View style={{marginRight:20,width:30}}>
+
+                        <View style={{marginRight:20,width:30,flexDirection:'row',alignItems:'center'}}>
                             <Icon name="map-marker" size={24}/>
                         </View>
-                        <View style={{flex:2}}>
+
+                        <View style={{flex:2,flexDirection:'row',alignItems:'center'}}>
                             <Text style={{'fontSize':16}}>用车城市:</Text>
                         </View>
-                        <View style={{flex:2}}>
-                            <Text>{this.state.city}</Text>
+
+                        <View style={{flex:5,flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
+                            <Text style={{color:'#222',fontSize:18}}>{this.state.city}</Text>
                         </View>
-                        <View style={{flex:1}}>
+
+                        <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
                             <TouchableOpacity onPress={
                                     ()=>{
                                         this.appendCarNumPrefixByCity(true);
@@ -368,27 +329,35 @@ class NewCarBind extends Component{
                                 <Icon name="chevron-right" size={24}/>
                             </TouchableOpacity>
                         </View>
+
                     </View>
 
                     <View style={[styles.row,{alignItems:'center'}]}>
-                        <View style={{marginRight:20,width:30}}>
+
+                        <View style={{marginRight:20,width:30,flexDirection:'row',alignItems:'center'}}>
                             <Icon name="address-card-o" size={24}/>
                         </View>
-                        <View style={{flex:2}}>
+
+                        <View style={{flex:2,flexDirection:'row',alignItems:'center'}}>
                             <Text style={{'fontSize':16}}>车牌:</Text>
                         </View>
-                        <View style={{flex:2}}>
+
+                        <View style={{flex:5,flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
                             <TextInput
-                                style={{borderBottomWidth:0}}
+                                style={{borderBottomWidth:0,fontSize:18,flex:1,textAlign:'center'}}
                                 editable = {true}
                                 height={40}
                                 onChangeText={
                                     (carNum)=>this.setState({carNum:carNum})
                                 }
                                 value={this.state.carNum}
-                                maxLength = {40}
+                                placeholder='请输入将要创建的车牌号'
+                                placeholderTextColor="#aaa"
+                                underlineColorAndroid="transparent"
+                                autoCapitalize="characters"
                             />
                         </View>
+
                         <View style={{flex:1}}></View>
                     </View>
 
