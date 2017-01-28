@@ -31,13 +31,6 @@ class UploadLicenseCardModal extends Component{
         }
     }
 
-    uploadPhoto(){
-
-    }
-
-
-
-
     constructor(props)
     {
         super(props);
@@ -55,6 +48,7 @@ class UploadLicenseCardModal extends Component{
         return (
             <View style={{flex:1,backgroundColor:'#f0f0f0'}}>
 
+                {/*header bar*/}
                 <View style={[{backgroundColor:'#11c1f3',padding:4,justifyContent: 'center',alignItems: 'center',flexDirection:'row'},styles.card]}>
                     <View style={{flex:1}}>
                         <TouchableOpacity onPress={
@@ -72,39 +66,16 @@ class UploadLicenseCardModal extends Component{
                     </View>
                 </View>
 
-                <View style={{flex:1,padding:5}}>
-                    <ScrollView style={{flex:1}}>
-                        <View style={{flex:1,padding:10}}>
-                            <View style={{flex:1,color:10}}>
+                {/*body*/}
+                <View style={{padding:10}}>
 
-                                <View style={{flex:4}}>
-                                    <View style={styles.container}>
-
-                                        <View>
-                                            <Icon name='user-circle' size={30} color="#444"/>
-                                        </View>
-
-                                        <TouchableOpacity onPress={
-                                    ()=>{
-                                        this.setState({hasPhoto:!this.state.hasPhoto});
-                                    }}>
-                                            {
-                                                <Image style={styles.thumb} source={ require('../../images/licenseCard1.jpg')}/>
-                                            }
-                                        </TouchableOpacity>
-
-                                    </View>
-
-                                </View>
-                            </View>
-
-                            <View style={{flex:1}}>
-                                <Text>上传行驶证1面</Text>
-                            </View>
-
+                    <View style={[{padding:20,paddingBottom:10,justifyContent: 'center',alignItems: 'center',
+                        flexDirection:'row',borderRadius:8,borderWidth:1}]}>
+                        <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                            <Image source={require('../../images/licenseCard1.jpg')} style={{width:width-90,height:220,borderRadius:8}}/>
+                            <Text style={{fontSize:18,color:'#33c6cd',marginTop:20}}>上传行驶证1面</Text>
                         </View>
-
-                    </ScrollView>
+                    </View>
                 </View>
 
             </View>
