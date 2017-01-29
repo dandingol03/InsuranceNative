@@ -13,16 +13,26 @@ import  {
     ScrollView,
     Alert,
     TouchableOpacity,
-    Dimensions
+    Dimensions,
+    Modal
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
-import GridView from 'react-native-grid-view'
 import { connect } from 'react-redux';
+import CameraUtil from '../modal/CameraUtil';
 var {height, width} = Dimensions.get('window');
 
-
 class UploadLicenseCardModal extends Component{
+
+    useCamera()
+    {
+        this.setState({cameraModalVisible:true});
+    }
+
+    closeCamera()
+    {
+        this.setState({cameraModalVisible:false});
+    }
 
     close(){
         if(this.props.onClose!==undefined&&this.props.onClose!==null)
@@ -38,7 +48,7 @@ class UploadLicenseCardModal extends Component{
         this.state={
             city:null,
             hasPhoto:false,
-
+            cameraModalVisible:false
         }
     }
 
@@ -66,18 +76,92 @@ class UploadLicenseCardModal extends Component{
                     </View>
                 </View>
 
-                {/*body*/}
-                <View style={{padding:10}}>
+                <ScrollView>
 
-                    <View style={[{padding:20,paddingBottom:10,justifyContent: 'center',alignItems: 'center',
-                        flexDirection:'row',borderRadius:8,borderWidth:1}]}>
-                        <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-                            <Image source={require('../../images/licenseCard1.jpg')} style={{width:width-90,height:220,borderRadius:8}}/>
-                            <Text style={{fontSize:18,color:'#33c6cd',marginTop:20}}>上传行驶证1面</Text>
+                    <View style={{padding:10}}>
+
+                        {/*行驶证1面*/}
+                        <View style={[{padding:20,paddingBottom:10,justifyContent: 'center',alignItems: 'center',
+                        flexDirection:'row',borderRadius:8,borderWidth:1,borderColor:'#aaa'}]}>
+                            <View style={{flex:1,justifyContent:'center',alignItems:'center',position:'relative'}}>
+                                <Image source={require('../../images/licenseCard1.jpg')}
+                                       style={{width:width-90,height:200,borderRadius:16}}/>
+
+                                <Text style={{fontSize:18,color:'#33c6cd',marginTop:20}}>上传行驶证1面</Text>
+
+                                <View style={{position:'absolute',left:width/3,top:60}}>
+                                    <TouchableOpacity style={{width:80,height:80,borderRadius:80,borderWidth:3,borderColor:'#fff',
+                                        justifyContent:'center',alignItems:'center',borderStyle:'dashed',position:'relative'}}
+                                                      onPress={()=>{
+                                                      this.useCamera();
+                                                  }}>
+                                        <Icon name="id-card-o" size={40} color="#fff"></Icon>
+                                        <View style={{position:'absolute',bottom:10,right:6}}>
+                                            <Icon name="camera" size={20} color="#fff"></Icon>
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
+
+                            </View>
+                        </View>
+
+
+
+
+                        {/*行驶证2面*/}
+                        <View style={[{padding:20,paddingBottom:10,justifyContent: 'center',alignItems: 'center',marginTop:20,
+                        flexDirection:'row',borderRadius:8,borderWidth:1,borderColor:'#aaa'}]}>
+                            <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                                <Image source={require('../../img/licenseCard2.jpg')}
+                                       style={{width:width-90,height:200,borderRadius:8,justifyContent:'center',alignItems:'center'}}>
+                                    <TouchableOpacity style={{width:80,height:80,borderRadius:80,borderWidth:3,borderColor:'#fff',
+                                        justifyContent:'center',alignItems:'center',borderStyle:'dashed',position:'relative'}}>
+                                        <Icon name="id-card-o" size={40} color="#fff"></Icon>
+                                        <View style={{position:'absolute',bottom:10,right:6}}>
+                                            <Icon name="camera" size={20} color="#fff"></Icon>
+                                        </View>
+                                    </TouchableOpacity>
+                                </Image>
+                                <Text style={{fontSize:18,color:'#33c6cd',marginTop:20}}>上传行驶证2面</Text>
+                            </View>
+                        </View>
+
+
+
+                        {/*行驶证3面*/}
+                        <View style={[{padding:20,paddingBottom:10,justifyContent: 'center',alignItems: 'center',marginTop:20,
+                        flexDirection:'row',borderRadius:8,borderWidth:1,borderColor:'#aaa'}]}>
+                            <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                                <Image source={require('../../img/licenseCard3.jpg')}
+                                       style={{width:width-90,height:200,borderRadius:8,justifyContent:'center',alignItems:'center'}}>
+                                    <TouchableOpacity style={{width:80,height:80,borderRadius:80,borderWidth:3,borderColor:'#fff',
+                                        justifyContent:'center',alignItems:'center',borderStyle:'dashed',position:'relative'}}>
+                                        <Icon name="id-card-o" size={40} color="#fff"></Icon>
+                                        <View style={{position:'absolute',bottom:10,right:6}}>
+                                            <Icon name="camera" size={20} color="#fff"></Icon>
+                                        </View>
+                                    </TouchableOpacity>
+                                </Image>
+                                <Text style={{fontSize:18,color:'#33c6cd',marginTop:20}}>上传行驶证3面</Text>
+                            </View>
                         </View>
                     </View>
-                </View>
+                </ScrollView>
 
+                <Modal
+                    animationType={"slide"}
+                    transparent={false}
+                    visible={this.state.cameraModalVisible}
+                    onRequestClose={() => {alert("Modal has been closed.")}}
+                >
+
+                    <CameraUtil
+                        onClose={()=>{
+                            this.closeCamera(!this.state.cameraModalVisible)
+                        }}
+
+                    />
+                </Modal>
             </View>
         );
     }

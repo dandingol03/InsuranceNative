@@ -340,6 +340,7 @@ class UpdateCarInfo extends Component{
                     >
 
                         <UploadLicenseCardModal
+                            navigator={this.props.navigator}
                             onClose={()=>{
                             this.uploadLicenseCard(!this.state.uploadModalVisible)
                         }}
