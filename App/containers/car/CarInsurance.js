@@ -12,6 +12,7 @@ import  {
     Text,
     View,
     TouchableOpacity,
+    TouchableHighlight,
     Dimensions,
     TextInput,
     ScrollView,
@@ -30,7 +31,7 @@ import Config from '../../../config';
 import Proxy from '../../proxy/Proxy';
 import NewCarBind from '../../components/modal/NewCarBind';
 import UpdateCarInfo from '../../components/UpdateCarInfo';
-
+import CarCompany from './CarCompany';
 
 const CANCEL_INDEX = 0;
 const DESTRUCTIVE_INDEX = 1;
@@ -45,26 +46,52 @@ class CarInsurance extends Component{
     }
 
 
-    navigate2NewCarCreate(carNum,city)
+    navigate2CarCompany(products)
     {
-
         const {navigator} =this.props;
         if(navigator) {
             navigator.push({
                 name: 'updateCarInfo',
-                component: UpdateCarInfo,
+                component: CarCompany,
                 params: {
-                    carNum: carNum,
-                    city:city
+                    products: products
                 }
             })
         }
     }
 
+    insuranceMealConfirm()
+    {
+
+        var meals=this.state.meals;
+        var products=[];
+
+        meals[this.state.selectedTab].products.map(function (product, i) {
+            if(product.checked==true)
+            {
+                products.push(product);
+            }
+        });
+
+        if(products.length>0)
+        {
+            this.navigate2CarCompany(products);
+        }else{
+
+        }
+
+    }
 
     _handlePress(index)
     {
-
+        //如果回调队列不为空
+        if(this.state.actionSheetCallbacks!==undefined&&this.state.actionSheetCallbacks!==null)
+        {
+            this.state.actionSheetCallbacks.map(function (callback,i) {
+                callback(index-2);
+            });
+        }
+        this.state.actionSheetCallbacks=[];
     }
 
 
@@ -104,8 +131,8 @@ class CarInsurance extends Component{
                             <View style={{flex:3,padding:2,flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
                                 {
                                     rowData.checked==true?
-                                        <Icon name="check-square-o" size={30} color="#11c1f3"/>:
-                                        <Icon name="circle-thin" size={30} color="#555"/>
+                                        <Icon name="check-circle" size={35} color="#11c1f3"/>:
+                                        <Icon name="circle-thin" size={35} color="#555"/>
                                 }
                             </View>
                         </View>
@@ -115,15 +142,19 @@ class CarInsurance extends Component{
         }else{
             row=
                 <View>
-                    <TouchableOpacity>
+                    <View>
                         <View style={lineStyle}>
-                            <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:8}}>
+                            <TouchableOpacity style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:8}}
+                                onPress={()=>{
+                                    rowData.checked=!rowData.checked;
+                                    this.setState({meals:this.state.meals})
+                                }}>
                                 {
                                     rowData.checked==true?
                                         <Icon name="check-square-o" size={27} color="#11c1f3"/>:
                                         <Icon name="circle-thin" size={27} color="#555"/>
                                 }
-                            </View>
+                            </TouchableOpacity>
 
                             <View style={{flex:5,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:2}}>
                                 <View>
@@ -147,28 +178,38 @@ class CarInsurance extends Component{
                                 }
                             </View>
 
-                            <View style={{flex:2,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:8}}>
+                            <View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:8}}>
                                 {
                                     rowData.insuranceTypes!==undefined&&rowData.insuranceTypes!==null?
                                         <TouchableOpacity style={{flex:1,justifyContent:'center',alignItems:'center',flexDirection:'row'}}
-                                                          onPress={
+                                                          activeOpacity={0.7} onPress={
                                                               ()=>{
                                                                   this.setState({insuranceTypes:rowData.insuranceTypes});
                                                                   setTimeout(function() {
-                                                                    this.ActionSheet.show();
+                                                                      this.state.actionSheetCallbacks.push(function(index) {
+
+                                                                          if(index>=0)
+                                                                          {
+                                                                              rowData.insuranceType=rowData.insuranceTypes[index];
+                                                                              rowData.productId=rowData.productIds[index];
+                                                                              this.setState({meals:this.state.meals});
+                                                                          }
+
+                                                                      }.bind(this));
+                                                                        this.ActionSheet.show();
                                                                   }.bind(this),300);
                                                               }}>
-                                            <Text>{rowData.insuranceType}</Text>
+                                            <Text style={{fontSize:18,color:'#222'}}>{rowData.insuranceType}</Text>
                                             <Icon name="angle-down" color="#222" size={30}/>
                                         </TouchableOpacity>:
                                         <View style={{flex:1,justifyContent:'center',alignItems:'center',flexDirection:'row'}}>
-                                            <Text>{rowData.insuranceType}</Text>
+                                            <Text style={{fontSize:18,color:'#222'}}>{rowData.insuranceType}</Text>
                                         </View>
                                 }
                             </View>
 
                         </View>
-                    </TouchableOpacity>
+                    </View>
                 </View>;
         }
 
@@ -249,7 +290,8 @@ class CarInsurance extends Component{
             accessToken: accessToken,
             carInfo:props.carInfo,
             selectedTab:null,
-            insuranceTypes:[]
+            insuranceTypes:[],
+            actionSheetCallbacks:[]
         };
     }
 
@@ -258,20 +300,43 @@ class CarInsurance extends Component{
 
 
         var listView=null;
+        var advisedListView=null;
+        var customListView=null;
 
-        if(this.state.selectedTab!==undefined&&this.state.selectedTab!==null&&this.state.meals!==undefined&&this.state.meals!==null)
+        if(this.state.meals!==undefined&&this.state.meals!==null)
         {
 
             var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-            var meal=this.state.meals[this.state.selectedTab];
+            var basicMeal=this.state.meals[0];
             listView=
-                <ScrollView>
+                (<ScrollView>
                     <ListView
                         automaticallyAdjustContentInsets={false}
-                        dataSource={ds.cloneWithRows(meal.products)}
+                        dataSource={ds.cloneWithRows(basicMeal.products)}
                         renderRow={this.renderRow.bind(this)}
                     />
-                </ScrollView>;
+                </ScrollView>);
+
+            var advisedMeal=this.state.meals[1];
+            advisedListView=
+                (<ScrollView>
+                    <ListView
+                        automaticallyAdjustContentInsets={false}
+                        dataSource={ds.cloneWithRows(advisedMeal.products)}
+                        renderRow={this.renderRow.bind(this)}
+                    />
+                </ScrollView>);
+            var customMeal=this.state.meals[2];
+            customListView=
+                (<ScrollView>
+                    <ListView
+                        automaticallyAdjustContentInsets={false}
+                        dataSource={ds.cloneWithRows(customMeal.products)}
+                        renderRow={this.renderRow.bind(this)}
+                    />
+                </ScrollView>);
+
+
         }else{
             this.fetchData();
         }
@@ -313,8 +378,10 @@ class CarInsurance extends Component{
                     />
 
 
-                    <ScrollableTabView style={{flex:1,padding:0,margin:0}}
-                                       renderTabBar={() => <DefaultTabBar style={{borderBottomWidth:0}} activeTextColor="#00c9ff"  inactiveTextColor="#222" underlineStyle={{backgroundColor:'#00c9ff'}}/>}
+                    <ScrollableTabView style={{flex:1,padding:0,margin:0}} onChangeTab={(data)=>{
+                        var tabIndex=data.i;
+                        this.state.selectedTab=tabIndex;
+                    }} renderTabBar={() => <DefaultTabBar style={{borderBottomWidth:0}} activeTextColor="#00c9ff"  inactiveTextColor="#222" underlineStyle={{backgroundColor:'#00c9ff'}}/>}
                     >
 
                         <View tabLabel='基础套餐' style={{flex:1,padding:12,paddingLeft:0,paddingRight:0}}>
@@ -327,7 +394,7 @@ class CarInsurance extends Component{
                             <TouchableOpacity style={[styles.row,{borderBottomWidth:0,backgroundColor:'#00c9ff',width:width*3/5,marginLeft:width/5,
                                 padding:10,borderRadius:10,justifyContent:'center'}]}
                                               onPress={()=>{
-                                         this.setState({modalVisible:true});
+                                          this.insuranceMealConfirm();
                                       }}>
                                 <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
                                     <Text style={{color:'#fff',fontSize:19}}>确认套餐选择</Text>
@@ -337,10 +404,36 @@ class CarInsurance extends Component{
 
                         <View tabLabel="建议套餐"  style={{flex:1,padding:12}}>
 
+                            <View style={{padding:15,paddingLeft:6,paddingRight:6,height:height-274}}>
+                                {advisedListView}
+                            </View>
+
+                            <TouchableOpacity style={[styles.row,{borderBottomWidth:0,backgroundColor:'#00c9ff',width:width*3/5,marginLeft:width/5,
+                                padding:10,borderRadius:10,justifyContent:'center'}]}
+                                              onPress={()=>{
+                                          this.insuranceMealConfirm();
+                                      }}>
+                                <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
+                                    <Text style={{color:'#fff',fontSize:19}}>确认套餐选择</Text>
+                                </View>
+                            </TouchableOpacity>
                         </View>
 
                         <View tabLabel="自定义套餐"  style={{flex:1,padding:12}}>
 
+                            <View style={{padding:15,paddingLeft:6,paddingRight:6,height:height-274}}>
+                                {customListView}
+                            </View>
+
+                            <TouchableOpacity style={[styles.row,{borderBottomWidth:0,backgroundColor:'#00c9ff',width:width*3/5,marginLeft:width/5,
+                                padding:10,borderRadius:10,justifyContent:'center'}]}
+                                              onPress={()=>{
+                                         this.insuranceMealConfirm();
+                                      }}>
+                                <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
+                                    <Text style={{color:'#fff',fontSize:19}}>确认套餐选择</Text>
+                                </View>
+                            </TouchableOpacity>
                         </View>
                     </ScrollableTabView>
                 </View>
