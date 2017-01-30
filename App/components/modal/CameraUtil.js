@@ -16,30 +16,36 @@ import  {
     Dimensions
 } from 'react-native';
 
-import Icon from 'react-native-vector-icons/FontAwesome';
 import Camera from 'react-native-camera';
-import { connect } from 'react-redux';
 var {height, width} = Dimensions.get('window');
 
 
 class CameraUtil extends Component{
 
-    close(){
+    close(path){
+        alert('invoke self close function');
+
         if(this.props.onClose!==undefined&&this.props.onClose!==null)
         {
-            this.props.onClose();
+            this.props.onClose(path);
         }
     }
 
     takePicture() {
+
+
+
+        var onClose=this.props.onClose;
         this.camera.capture()
-            .then((json) => {
+            .then((json)=>{
                 var data=json.data;
                 var path=json.path;
                 Alert.alert(
                     'info',
-                    'path='+path
+                    'image path='+path
                 );
+                if(onClose!==undefined&&onClose!==null)
+                    onClose(path);
             })
             .catch(err => console.error(err));
     }
@@ -47,6 +53,7 @@ class CameraUtil extends Component{
     constructor(props)
     {
         super(props);
+
 
         this.state={
             city:null,
@@ -66,10 +73,7 @@ class CameraUtil extends Component{
                                   }}
                     style={styles.preview}
                     aspect={Camera.constants.Aspect.fill}>
-                    <Text style={styles.capture} onPress={
-                       ()=>{
-                           this.takePicture();
-                       }}>
+                    <Text style={styles.capture} onPress={this.takePicture.bind(this)}>
                         [CAPTURE]
                     </Text>
                 </Camera>

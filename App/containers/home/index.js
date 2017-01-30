@@ -19,7 +19,7 @@ import { connect } from 'react-redux';
 var {height, width} = Dimensions.get('window');
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-import CarManage from '../car_manage/index';
+import CarManage from '../car/CarManage';
 
 class Home extends Component{
 
@@ -218,7 +218,7 @@ class Home extends Component{
                 <Image style={styles.logo} source={require('../../img/newBanner@2x.png')} />
 
                 {/* body*/}
-                <Image style={{width:width,height:height-290}} source={require('../../img/bkg1@2x.png')}>
+                <Image style={{width:width,height:height-230}} source={require('../../img/bkg1@2x.png')}>
                     <View style={{padding:20}}>
                         <View  style={[styles.row]}>
                             <TouchableOpacity style={{flex:1,justifyContent:'center',alignItems:'center'}}
@@ -284,11 +284,11 @@ var styles = StyleSheet.create({
     },
     logo:{
         width:width,
-        height:290
+        height:230
     },
     module:{
-        width:90,
-        height:90
+        width:75,
+        height:75
     },
     separator: {
         height: 1,

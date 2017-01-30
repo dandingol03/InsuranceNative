@@ -24,14 +24,15 @@ var {height, width} = Dimensions.get('window');
 
 class UploadLicenseCardModal extends Component{
 
-    useCamera()
+    useCamera(assetId)
     {
-        this.setState({cameraModalVisible:true});
+        this.setState({cameraModalVisible:true,assetId:assetId});
     }
 
-    closeCamera()
+    closeCamera(path)
     {
-        this.setState({cameraModalVisible:false});
+        this.state.assetsBundle[this.state.assetId]=path;
+        this.setState({cameraModalVisible:false,assetsBundle:this.state.assetsBundle});
     }
 
     close(){
@@ -48,7 +49,8 @@ class UploadLicenseCardModal extends Component{
         this.state={
             city:null,
             hasPhoto:false,
-            cameraModalVisible:false
+            cameraModalVisible:false,
+            assetsBundle:{}
         }
     }
 
@@ -84,8 +86,13 @@ class UploadLicenseCardModal extends Component{
                         <View style={[{padding:20,paddingBottom:10,justifyContent: 'center',alignItems: 'center',
                         flexDirection:'row',borderRadius:8,borderWidth:1,borderColor:'#aaa'}]}>
                             <View style={{flex:1,justifyContent:'center',alignItems:'center',position:'relative'}}>
-                                <Image source={require('../../images/licenseCard1.jpg')}
-                                       style={{width:width-90,height:200,borderRadius:16}}/>
+                                {
+                                    this.state.assetsBundle['licenseCard1.jpg']!==undefined&&this.state.assetsBundle['licenseCard1.jpg']!==null?
+                                        <Image source={require(this.state.assetsBundle['licenseCard1.jpg'])}
+                                               style={{width:width-90,height:200,borderRadius:16}}/>:
+                                        <Image source={require('../../images/licenseCard1.jpg')}
+                                               style={{width:width-90,height:200,borderRadius:16}}/>
+                                }
 
                                 <Text style={{fontSize:18,color:'#33c6cd',marginTop:20}}>上传行驶证1面</Text>
 
@@ -93,7 +100,7 @@ class UploadLicenseCardModal extends Component{
                                     <TouchableOpacity style={{width:80,height:80,borderRadius:80,borderWidth:3,borderColor:'#fff',
                                         justifyContent:'center',alignItems:'center',borderStyle:'dashed',position:'relative'}}
                                                       onPress={()=>{
-                                                      this.useCamera();
+                                                      this.useCamera('licenseCard1.jpg');
                                                   }}>
                                         <Icon name="id-card-o" size={40} color="#fff"></Icon>
                                         <View style={{position:'absolute',bottom:10,right:6}}>
@@ -156,10 +163,10 @@ class UploadLicenseCardModal extends Component{
                 >
 
                     <CameraUtil
-                        onClose={()=>{
-                            this.closeCamera(!this.state.cameraModalVisible)
+                        onClose={(path)=>{
+                            alert(path);
+                            this.closeCamera(path);
                         }}
-
                     />
                 </Modal>
             </View>

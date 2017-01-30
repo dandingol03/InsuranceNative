@@ -28,7 +28,7 @@ import Config from '../../../config';
 import Proxy from '../../proxy/Proxy';
 import NewCarBind from '../../components/modal/NewCarBind';
 import UpdateCarInfo from '../../components/UpdateCarInfo';
-
+import CarInsurance from './CarInsurance';
 
 class CarManage extends Component{
 
@@ -128,6 +128,21 @@ class CarManage extends Component{
         }
     }
 
+    navigate2CarInsurance(carInfo)
+    {
+
+        const {navigator} =this.props;
+        if(navigator) {
+            navigator.push({
+                name: 'car_insurance',
+                component: CarInsurance,
+                params: {
+                    carInfo: carInfo
+                }
+            })
+        }
+    }
+
     bindNewCar(carNum,cb)
     {
         var {accessToken}=this.props;
@@ -184,19 +199,21 @@ class CarManage extends Component{
                       });
                        this.setState({bindedCars: bindedCars,dataSource:this.state.dataSource.cloneWithRows(bindedCars)});
                 }}
-                    isChecked={true}
+                    isChecked={false}
                     leftText={null}
                 />;
             }else{
                 prefer=<CheckBox
                     style={{ padding: 2,flex:1,justifyContent:'center',flexDirection:'row',alignItems:'center'}}
                     onClick={()=>{
-                      var bindedCars=_.cloneDeep(this.state.bindedCars);
-                      bindedCars.map(function(car,i) {
-                        if(car.carId==rowData.carId)
-                            car.checked=true;
-                      });
-                       this.setState({bindedCars: bindedCars,dataSource:this.state.dataSource.cloneWithRows(bindedCars)});
+
+                        this.navigate2CarInsurance(rowData);
+                      {/*var bindedCars=_.cloneDeep(this.state.bindedCars);*/}
+                      {/*bindedCars.map(function(car,i) {*/}
+                        {/*if(car.carId==rowData.carId)*/}
+                            {/*car.checked=true;*/}
+                      {/*});*/}
+                       {/*this.setState({bindedCars: bindedCars,dataSource:this.state.dataSource.cloneWithRows(bindedCars)});*/}
 
                 }}
                     isChecked={false}
@@ -213,30 +230,31 @@ class CarManage extends Component{
 
         var row=
             <View>
-                <TouchableOpacity onPress={
-                    function() {
-                        //TODO:
-                    }.bind(this)}>
-                    <View style={lineStyle}>
-                        <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:8}}>
-                            {prefer}
-                        </View>
 
-                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:2}}>
-                           <View>
-                               <Text style={{color:'#000',fontSize:18}}>
-                                   车牌号:{rowData.carNum}
-                               </Text>
-                               <Text style={{color:'#000',fontSize:17}}>
-                                   车主姓名 :{rowData.ownerName}
-                               </Text>
-                           </View>
-                        </View>
-                        <View style={{width:50,padding:2,flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
-                            <Icon name="angle-right" size={52} color="#00c9ff"></Icon>
-                        </View>
+                <View style={lineStyle}>
+                    <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:8}}>
+                        {prefer}
                     </View>
-                </TouchableOpacity>
+
+                    <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:2}}
+                                      onPress={()=>{
+                                           this.navigate2CarInsurance(rowData);
+                                      }}>
+                       <View>
+                           <Text style={{color:'#000',fontSize:18}}>
+                               车牌号:{rowData.carNum}
+                           </Text>
+                           <Text style={{color:'#000',fontSize:17}}>
+                               车主姓名 :{rowData.ownerName}
+                           </Text>
+                       </View>
+                    </TouchableOpacity>
+
+                    <View style={{width:50,padding:2,flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
+                        <Icon name="angle-right" size={52} color="#00c9ff"></Icon>
+                    </View>
+                </View>
+
 
             </View>;
 

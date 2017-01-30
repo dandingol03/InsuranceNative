@@ -415,16 +415,17 @@ class UpdateCarInfo extends Component{
 
                         </View>
                         <View tabLabel='上传行驶证' style={{padding:12,flex:1}}>
-                            <View style={{padding:10,marginTop:40,width:width/2,marginLeft:width/4,flexDirection:'row',justifyContent:'center'}}>
-                                <Icon.Button name="hand-o-up" iconStyle={{padding:10,paddingTop:2,paddingBottom:2}} backgroundColor="#ef473a" onPress={
-                                            ()=>{
+                            <View style={{padding:10,marginTop:10,width:width/2,marginLeft:width/4,flexDirection:'row',justifyContent:'center'}}>
+
+                                <TouchableOpacity style={{flex:2,flexDirection:'row',justifyContent:'center',backgroundColor:'#ef473a',
+                                        padding:12,paddingLeft:6,paddingRight:6,borderRadius:12,height:50}}
+                                                  onPress={
+                                          ()=>{
                                                this.uploadLicenseCard(!this.state.uploadModalVisible);
-                                            }
-                                        }>
-                                    <Text style={{fontFamily: 'Arial', fontSize: 15,textAlign:'center',color:'#fff',marginRight:6}}>
-                                        上传行驶证
-                                    </Text>
-                                </Icon.Button>
+                                          }}>
+                                    <Icon name="hand-pointer-o" size={23} color="#fff"></Icon>
+                                    <Text style={{color:'#fff',fontSize:16,marginLeft:5}}>上传行驶证</Text>
+                                </TouchableOpacity>
                             </View>
                         </View>
 
