@@ -49,12 +49,14 @@ class CarInsurance extends Component{
     navigate2CarCompany(products)
     {
         const {navigator} =this.props;
+        const {carInfo}=this.props;
         if(navigator) {
             navigator.push({
                 name: 'updateCarInfo',
                 component: CarCompany,
                 params: {
-                    products: products
+                    products: products,
+                    carInfo:carInfo
                 }
             })
         }

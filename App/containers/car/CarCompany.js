@@ -28,6 +28,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import _ from 'lodash';
 import Config from '../../../config';
 import Proxy from '../../proxy/Proxy';
+import AppendCarInsuranceder from './AppendCarInsuranceder';
 
 class CarCompany extends Component{
 
@@ -38,6 +39,40 @@ class CarCompany extends Component{
         }
     }
 
+    navigate2AppendCarInsuranceder(companys)
+    {
+        const {navigator,carInfo,products} =this.props;
+
+        if(navigator) {
+            navigator.push({
+                name: 'append_car_insuranceder',
+                component: AppendCarInsuranceder,
+                params: {
+                    companys: companys,
+                    carInfo:carInfo,
+                    products:products
+                }
+            })
+        }
+    }
+
+    companyConfirm()
+    {
+        var companys=[];
+        this.state.companys.map(function (company, i) {
+            if(company.checked==true)
+                companys.push(company);
+        });
+        if(companys.length>0)
+        {
+            this.navigate2AppendCarInsuranceder(companys);
+        }else{
+            Alert.alert(
+                '错误',
+                '请先勾选公司再点击确认'
+            );
+        }
+    }
 
     renderRow(rowData,sectionId,rowId){
 
@@ -121,6 +156,7 @@ class CarCompany extends Component{
         const { accessToken } = this.props;
         this.state = {
             products:props.products,
+            carInfo:props.carInfo,
             dataSource : null,
             accessToken: accessToken,
             companys:null
@@ -182,7 +218,7 @@ class CarCompany extends Component{
                 <TouchableOpacity style={[styles.row,{borderBottomWidth:0,backgroundColor:'#00c9ff',width:width*3/5,marginLeft:width/5,
                         padding:10,borderRadius:10,justifyContent:'center'}]}
                                   onPress={()=>{
-                                         this.setState({modalVisible:true});
+                                         this.companyConfirm();
                                       }}>
                     <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
                         <Text style={{color:'#fff',fontSize:19}}>确认公司选择</Text>

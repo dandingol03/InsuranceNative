@@ -5,7 +5,7 @@ import * as types from '../action/types';
 const initialState = {
     accessToken: null,
     auth:false,
-    info:null
+    personInfo:null
 };
 
 let user = (state = initialState, action) => {
@@ -19,6 +19,11 @@ let user = (state = initialState, action) => {
                 validate:action.validate,
                 auth:action.auth
             })
+        case types.GET_PERSON_INFO:
+            return Object.assign({}, state, {
+                personInfo:action.personInfo
+            })
+
         default:
             return state;
     }
