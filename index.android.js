@@ -45,26 +45,16 @@ class InsuranceNative extends Component{
 
         return (
             <View style={{flex:1}}>
-                <ScrollableTabView
-                    style={{marginTop: 20, }}
-                    initialPage={0}
-                    renderTabBar={() => <ScrollableTabBar />}
-                >
-                    <Text tabLabel='Tab #1'>My</Text>
-                    <Text tabLabel='Tab #2 word word'>favorite</Text>
-                    <Text tabLabel='Tab #3 word word word'>project</Text>
-                    <Text tabLabel='Tab #4 word word word word'>favorite</Text>
-                    <View tabLabel='Tab #5'>
-                        <Camera
-                            ref={(cam) => {
-                                    this.camera = cam;
-                                  }}
-                            style={styles.preview}
-                            aspect={Camera.constants.Aspect.fill}>
-                            <Text style={styles.capture} onPress={this.takePicture.bind(this)}>[CAPTURE]</Text>
-                        </Camera>
-                    </View>
-                </ScrollableTabView>
+
+                <Camera
+                    ref={(cam) => {
+                            this.camera = cam;
+                          }}
+                    style={styles.preview}
+                    aspect={Camera.constants.Aspect.fill}>
+                    <Text style={styles.capture} onPress={this.takePicture.bind(this)}>[CAPTURE]</Text>
+                </Camera>
+
             </View>
         );
     }

@@ -7,6 +7,7 @@
 
 export const AUTH_BY_OAUTH = 'AUTH_BY_OAUTH';
 export const ACCESS_TOKEN_ACK = 'ACCESS_TOKEN_ACK';
+export const GET_PERSON_INFO='GET_PERSON_INFO';
 
 //dashboard action
 export const SELECT_CUSTOMER_CAR='SELECT_CUSTOMER_CAR';

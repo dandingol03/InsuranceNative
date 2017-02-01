@@ -4,7 +4,10 @@ import {
     StyleSheet,
     Text,
     TabBarIOS,
-    Navigator
+    Navigator,
+    BackAndroid,
+    ToastAndroid,
+    Platform
 } from 'react-native';
 
 
@@ -22,10 +25,11 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import ScrollableTabView, {DefaultTabBar, ScrollableTabBar} from 'react-native-scrollable-tab-view';
 
 import Home from './home/index';
-import Me from './Me';
+import My from './my/My';
 import GaHome from './GaHome';
 import GaOrder from './GaOrder';
 import dym from './dym';
+
 
 const tabBarTintColor = '#f8f8f8';// 标签栏的背景颜色
 const tabTintColor = '#3393F2'; // 被选中图标颜色
@@ -49,8 +53,8 @@ class App extends React.Component {
         switch (route) {
             case 'home':
                 break;
-            case 'me':
-                component=Me;
+            case 'my':
+                component=My;
                 break;
             case 'dym':
                 component=dym;
@@ -82,56 +86,6 @@ class App extends React.Component {
 
     }
 
-    _createTabbarItem(route,icon){
-
-        var component=Home;
-        switch (route) {
-            case 'me':
-             component=Me;
-                break;
-            case 'product':
-                break;
-            case 'ga':
-                component=GaHome;
-                break;
-            case 'gaOrder':
-                component=GaOrder;
-                break;
-
-            case 'dym':
-                component=dym;
-                break;
-            default:
-                break;
-        }
-
-
-        return (
-            <FontAwesome.TabBarItem
-                title=""
-                iconName={icon}
-                selectedIconName={icon}
-                selected={this.state.tab === route}
-                onPress={() => {
-                        this.setState({
-                            tab: route,
-                        });
-                    }}>
-                <Navigator
-                    initialRoute={{ name: 'home', component:component }}
-                    configureScene={(route) => {
-                        return Navigator.SceneConfigs.HorizontalSwipeJumpFromRight;
-                      }}
-                    renderScene={(route, navigator) => {
-                        let Component = route.component;
-                        return <Component {...route.params} navigator={navigator} />
-                      }} />
-            </FontAwesome.TabBarItem>
-        );
-
-    }
-
-
 
     render() {
         let auth=this.props.auth;
@@ -140,6 +94,7 @@ class App extends React.Component {
             return (
                 <TabNavigator>
                     {this._createNavigatorItem('home','home')}
+                    {this._createNavigatorItem('my','user-circle')}
                     {this._createNavigatorItem('dym','car')}
                 </TabNavigator>
             );
@@ -147,6 +102,31 @@ class App extends React.Component {
             return (<Login/>);
         }
     }
+
+    onBackAndroid()
+    {
+        if(this.lastBackPressed&&this.lastBackPressed+2000>=Date.now())
+        {
+            return false;
+        }
+        this.lastBackPressed=Date.now();
+        ToastAndroid.show('再按一次退出应用',ToastAndroid.SHORT);
+        return true;
+    }
+
+    componentWillMount()
+    {
+        if (Platform.OS === 'android') {
+            BackAndroid.addEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
+        }
+    }
+
+    componentWillUnmount() {
+        if (Platform.OS === 'android') {
+            BackAndroid.removeEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
+        }
+    }
+
 }
 
 var styles = StyleSheet.create({
