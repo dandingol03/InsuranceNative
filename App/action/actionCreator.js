@@ -134,6 +134,12 @@ let setCarOrdersInApplyed=(orders)=>{
     }
 }
 
+export let enableCarOrdersOnFresh=()=>{
+    return {
+        type:types.ENABLE_CARORDERS_ONFRESH
+    }
+}
+
 let disableCarOrdersOnFresh=()=>{
     return {
         type:types.DISABLE_CARORDERS_ONFRESH

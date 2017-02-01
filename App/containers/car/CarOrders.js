@@ -27,8 +27,8 @@ import ScrollableTabView, {DefaultTabBar, ScrollableTabBar} from 'react-native-s
 import _ from 'lodash';
 import Config from '../../../config';
 import Proxy from '../../proxy/Proxy';
-import {fetchCarOrders} from '../../action/actionCreator';
-
+import {fetchCarOrders,enableCarOrdersOnFresh} from '../../action/actionCreator';
+import DateFilter from '../../filter/DateFilter';
 
 
 class CarOrders extends Component{
@@ -60,7 +60,10 @@ class CarOrders extends Component{
                       });
                  }
                  this.setState({relativePersons:this.state.relativePersons,insuranceder:rowData});   }}>
-                <View style={{flex:1}}></View>
+                <View style={{flex:1,alignItems:'center'}}>
+                    <Text style={{fontSize:18,color:'#222'}}>{DateFilter.filter(rowData.modifyTime,'yyyy-mm-dd')}</Text>
+                    <Text style={{fontSize:18,color:'#222'}}>{DateFilter.filter(rowData.modifyTime,'hh:mm')}</Text>
+                </View>
                 <View style={{flex:4,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:2}}>
                     <View>
                         <Text style={{color:'#000',fontSize:18}}>
@@ -79,10 +82,60 @@ class CarOrders extends Component{
         );
 
 
-
         return row;
     }
 
+
+    renderPricedRow(rowData,sectionId,rowId){
+        var lineStyle=null;
+
+        lineStyle={flex:1,flexDirection:'row',justifyContent:'flex-start',backgroundColor:'transparent'};
+
+        var row=(
+            <TouchableOpacity style={lineStyle} onPress={()=>{
+                 rowData.checked=!rowData.checked;
+                 var relativePersons=this.state.relativePersons;
+                 if(rowData.checked==true)
+                 {
+                      relativePersons.map(function(person,i) {
+                          if(person.personId!=rowData.personId)
+                              person.checked=false;
+                      });
+                 }
+                 this.setState({relativePersons:this.state.relativePersons,insuranceder:rowData});   }}>
+                <View style={{flex:2,flexDirection:'row',alignItems:'center',justifyContent:'center',borderRightWidth:1,borderColor:'#888'}}>
+                    <View style={{flex:1,alignItems:'center'}}>
+                        <Text style={{fontSize:18,color:'#222'}}>{DateFilter.filter(rowData.modifyTime,'yyyy-mm-dd')}</Text>
+                        <Text style={{fontSize:18,color:'#222'}}>{DateFilter.filter(rowData.modifyTime,'hh:mm')}</Text>
+                    </View>
+                </View>
+                <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:2}}>
+                    <View style={{flex:1,marginLeft:20}}>
+                        <Text style={{color:'#222',fontSize:18}}>
+                            {rowData.orderNum}
+                        </Text>
+                        {
+                            rowData.orderState==3?
+                                <Text style={{color:'#222',fontSize:16}}>
+                                    报价完成
+                                </Text>:
+                                <Text style={{color:'#222',fontSize:16}}>
+                                    报价中
+                                </Text>
+                        }
+                    </View>
+                </View>
+                <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:8}}>
+                   <Text style={{color:'#222',fontSize:18,marginRight:5}}>
+                       详细
+                   </Text>
+                   <Icon name="angle-right" size={30} color="#222"/>
+                </View>
+            </TouchableOpacity>
+        );
+
+        return row;
+    }
 
 
     fetchData(){
@@ -132,7 +185,7 @@ class CarOrders extends Component{
                         <ListView
                             automaticallyAdjustContentInsets={false}
                             dataSource={ds.cloneWithRows(pricedAndPricingOrders)}
-                            renderRow={this.renderRow.bind(this)}
+                            renderRow={this.renderPricedRow.bind(this)}
                         />
                     </ScrollView>);
             }
@@ -184,7 +237,11 @@ class CarOrders extends Component{
                         </Text>
                     </View>
 
-                    <TouchableOpacity style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
+                    <TouchableOpacity style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center'}}
+                                      onPress={()=>{
+                                           const {dispatch} = this.props;
+                                            dispatch(enableCarOrdersOnFresh());
+                                      }}>
                         <Icon name='repeat' size={24} color='#222'/>
                     </TouchableOpacity>
 
