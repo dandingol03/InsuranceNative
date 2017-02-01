@@ -90,9 +90,6 @@ class AppendCarNumPrefixModal extends Component{
 
     render(){
 
-
-
-
         return (
             <View style={{flex:1,backgroundColor:'#f0f0f0'}}>
                 <View style={[{backgroundColor:'#11c1f3',padding:4,justifyContent: 'center',alignItems: 'center',flexDirection:'row'},styles.card]}>

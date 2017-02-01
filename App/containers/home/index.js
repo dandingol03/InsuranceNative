@@ -20,6 +20,7 @@ var {height, width} = Dimensions.get('window');
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import CarManage from '../car_manage/index';
+import Life from '../Life.js';
 
 class Home extends Component{
 
@@ -36,6 +37,18 @@ class Home extends Component{
             navigator.push({
                 name: 'car_manage',
                 component: CarManage,
+                params: {
+                }
+            })
+        }
+    }
+
+    navigate2Life(){
+        const { navigator } = this.props;
+        if(navigator) {
+            navigator.push({
+                name: 'life',
+                component: Life,
                 params: {
                 }
             })
@@ -233,7 +246,7 @@ class Home extends Component{
 
                             <TouchableOpacity style={{flex:1,justifyContent:'center',alignItems:'center'}}
                                               onPress={ ()=>{
-                                                   console.log('go into life business');
+                                                    this.navigate2Life();
                                                 }}>
                                 <Image style={[styles.module]} source={require('../../img/life@2x.png')}/>
                                 <View style={{marginTop:0,padding:12}}>

@@ -4,7 +4,6 @@
 
 import React from 'react';
 
-
 var {
     Component
 } = React;
@@ -33,7 +32,6 @@ var Proxy = require('../proxy/Proxy');
 
 var  Login =React.createClass({
     onLoginPressed:function () {
-
 
         const {dispatch} = this.props;
         var {user}=this.state;
@@ -102,7 +100,6 @@ var  Login =React.createClass({
 
                 <Image resizeMode="stretch" source={require('../img/login_background@2x.png')} style={{width:width,height:height-23}}>
                     <View style={{justifyContent:'center',flexDirection:'row',padding:0,marginTop:40}}>
-
 
                         <View style={{
                             position:"relative",
