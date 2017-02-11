@@ -198,7 +198,8 @@ class My extends Component{
                                 <Image resizeMode="stretch" source={require('../../img/my_face@2x.png')} style={{width:100,height:100}}/>
                             </View>
                             <View style={{flexDirection:'row',justifyContent:'center',width:width}}>
-                                <Text style={{fontSize:18,color:'#222'}}>{personInfo.perName}</Text>
+                                {/*<Text style={{fontSize:18,color:'#222'}}>{personInfo.perName}</Text>*/}
+                                <Text style={{fontSize:18,color:'#222'}}>{'dingyiming'}</Text>
                             </View>
 
                         </View>

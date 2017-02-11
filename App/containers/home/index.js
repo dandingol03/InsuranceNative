@@ -19,9 +19,9 @@ import { connect } from 'react-redux';
 var {height, width} = Dimensions.get('window');
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-import CarManage from '../car_manage/index';
-import Life from '../Life.js';
-
+import CarManage from '../car/CarManage';
+import Life from '../Life/Life.js';
+import Maintain from '../Maintain/Maintain.js';
 
 class Home extends Component{
 
@@ -50,6 +50,18 @@ class Home extends Component{
             navigator.push({
                 name: 'life',
                 component: Life,
+                params: {
+                }
+            })
+        }
+    }
+
+    navigate2Maintain(){
+        const { navigator } = this.props;
+        if(navigator) {
+            navigator.push({
+                name: 'maintain',
+                component: Maintain,
                 params: {
                 }
             })
@@ -257,12 +269,16 @@ class Home extends Component{
                         </View>
 
                         <View  style={[styles.row]}>
-                            <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+
+                            <TouchableOpacity style={{flex:1,justifyContent:'center',alignItems:'center'}}
+                                              onPress={ ()=>{
+                                                    this.navigate2Maintain();
+                                                }}>
                                 <Image style={[styles.module]} source={require('../../img/maintain@2x.png')}/>
                                 <View style={{marginTop:0,padding:12}}>
                                     <Text style={{fontSize:18,color:'#222'}}>维修</Text>
                                 </View>
-                            </View>
+                            </TouchableOpacity>
 
                             <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
                                 <Image style={[styles.module]} source={require('../../img/drivingService@2x.png')}/>

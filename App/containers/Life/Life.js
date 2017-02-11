@@ -26,6 +26,11 @@ import { connect } from 'react-redux';
 var {height, width} = Dimensions.get('window');
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ActionSheet from 'react-native-actionsheet';
+import AppendLifeInsurer from './AppendLifeInsurer.js';
+import AppendLifeInsuranceder from './AppendLifeInsuranceder.js';
+import AppendLifeBenefiter from './AppendLifeBenefiter.js';
+import Popup from 'react-native-popup';
+import MyPop from 'react-native-popupwindow';
 
 
 
@@ -36,6 +41,24 @@ class Life extends Component{
         if(navigator) {
             navigator.pop();
         }
+    }
+
+    onPressHandle() {
+        let options = {
+        };
+        MyPop.showPopupWindow(options,(err,action,button) =>{
+            if(err){
+                ToastAndroid.show(err,ToastAndroid.SHORT);
+            }else{
+                if(action === 'buttonClicked'){
+                    if(button === 'positive'){
+                        ToastAndroid.show('点击确定',ToastAndroid.SHORT);
+                    }else if(button === 'negative'){
+                        ToastAndroid.show('点击取消',ToastAndroid.SHORT);
+                    }
+                }
+            }
+        });
     }
 
     _handlePress1(index) {
@@ -53,10 +76,133 @@ class Life extends Component{
 
     saveLifeInsuranceIntend(){
 
+        if(this.state.insuranceder.personId!=undefined&&this.state.insuranceder.personId!=null
+            &&this.state.insurer.personId!=undefined&&this.state.insurer.personId!=null
+            &&((this.state.benefiter.personId!=undefined&&this.state.benefiter.personId!=null)
+            ||(this.state.isLegalBenefiter!=undefined&&$this.state.isLegalBenefiter!=null))
+            &&this.state.planInsuranceFee!=undefined&&this.state.planInsuranceFee!=null
+            &&this.state.insuranceTypeCode!=undefined&&this.state.insuranceTypeCode!=null)
+
+        {
+            //TDOO:校验是否已有寿险订单
+            //受益人法定
+            Proxy.post({
+                url:Config.server+'/svr/request',
+                headers: {
+                    'Authorization': "Bearer " + this.state.accessToken,
+                    'Content-Type': 'application/json'
+                },
+                body: {
+                    request:'validateLifeInsuranceOrderApplyRedundancy',
+                    info:{
+                        insurancederId:this.state.insuranceder.personId,
+                        insurerId:this.state.insurer.personId,
+                        benefiterId:this.state.benefiter.personId
+                    }
+                }
+            },(res)=> {
+                var json=res.data;
+                if(json.data==true) {
+                    var msg=null;
+                    if(this.state.benefiter.personId!==undefined&&this.state.benefiter.personId!==null&&this.state.benefiter.personId!=='')
+                    {
+                        msg='已存在正在申请的相同投保人、被保险人的寿险订单,是否仍要提交';
+                    }
+                    else{
+                        msg='已存在正在申请的相同投保人、被保险人、受益人的寿险订单的寿险订单,是否仍要提交'
+                    }
+
+                    let options = {message :msg};
+                    MyPop.showPopupWindow(options,(err,action,button) =>{
+                        if(err){
+                            ToastAndroid.show(err,ToastAndroid.SHORT);
+                        }else{
+                            if(action === 'buttonClicked'){
+                                if(button === 'positive'){
+                                    console.log('确定');
+                                }else if(button === 'negative'){
+                                    console.log('取消');
+                                }
+                            }
+                        }
+                    });
+                }else{
+                }
+
+            }, (err) =>{
+            });
+        }
+
+    }
+
+
+    setLifeInsurer(insurer){
+        var lifeInsurer = insurer;
+        this.setState({insurer:lifeInsurer});
 
 
     }
 
+    setLifeInsuranceder(insuranceder){
+        var lifeInsuranceder = insuranceder;
+        this.setState({insuranceder:lifeInsuranceder});
+
+
+    }
+
+    setLifeBenefiter(benefiter){
+
+        var lifeBenefiter = benefiter;
+        if(lifeBenefiter.perName!=='法定'){
+            this.setState({benefiter:lifeBenefiter,isLegalBenefiter:0});
+        }
+        else{
+
+            this.setState({benefiter:lifeBenefiter,isLegalBenefiter:1});
+        }
+
+
+    }
+
+
+    navigate2AppendLifeInsurer(){
+        const { navigator } = this.props;
+        if(navigator) {
+            navigator.push({
+                name: 'append_life_insurer',
+                component: AppendLifeInsurer,
+                params: {
+                    setLifeInsurer:this.setLifeInsurer.bind(this),
+                }
+            })
+        }
+    }
+
+    navigate2AppendLifeInsuranceder(){
+        const { navigator } = this.props;
+        if(navigator) {
+            navigator.push({
+                name: 'append_life_insuranceder',
+                component: AppendLifeInsuranceder,
+                params: {
+                    setLifeInsuranceder:this.setLifeInsuranceder.bind(this),
+                }
+            })
+        }
+    }
+
+    navigate2AppendLifeBenefiter(){
+        const { navigator } = this.props;
+        if(navigator) {
+            navigator.push({
+                name: 'append_life_benefiter',
+                component: AppendLifeBenefiter,
+                params: {
+                    setLifeBenefiter:this.setLifeBenefiter.bind(this),
+                }
+            })
+        }
+    }
 
 
     constructor(props)
@@ -65,9 +211,10 @@ class Life extends Component{
         const { accessToken } = this.props;
         this.state = {
             accessToken: accessToken,
-            insure:{perName:''},
-            insuranceder:{perName:''},
-            benefiter:{perName:''},
+            insurer:{perName:null},
+            insuranceder:{perName:null},
+            benefiter:{perName:null},
+            isLegalBenefiter:false,
             insuranceType:null,
             hasSocietyInsurance:false,
             hasCommerceInsurance:false,
@@ -81,6 +228,11 @@ class Life extends Component{
         var insuranceType = this.state.insuranceType;
         var hasSocietyInsurance= this.state.hasSocietyInsurance;
         var hasCommerceInsurance= this.state.hasCommerceInsurance;
+        var insurer = this.state.insurer;
+        var insuranceder = this.state.insuranceder;
+        var benefiter = this.state.benefiter;
+
+
 
         const CANCEL_INDEX = 0;
         const DESTRUCTIVE_INDEX = 1;
@@ -94,7 +246,7 @@ class Life extends Component{
                     <TouchableOpacity onPress={()=>{
                         this.goBack();
                     }}>
-                        <Image source={require('../images/icon_back.png')} style={{width:20,height:30,color:'#fff'}}/>
+                        <Image source={require('../../images/icon_back.png')} style={{width:20,height:30,color:'#fff'}}/>
                     </TouchableOpacity>
                     <Text style={{fontSize:20,flex:3,textAlign:'center',color:'#fff'}}>
                         填写寿险意向
@@ -102,7 +254,7 @@ class Life extends Component{
                 </View>
 
                 {/*body*/}
-                <Image resizeMode="stretch" source={require('../img/login_background@2x.png')} style={{width:width,height:height-23}}>
+                <Image resizeMode="stretch" source={require('../../img/login_background@2x.png')} style={{width:width,height:height-23}}>
                     <View style={{padding:10,padding:20}}>
 
                         {/*投保人*/}
@@ -112,24 +264,20 @@ class Life extends Component{
                                 <Text style={{fontSize:20,flex:3,textAlign:'left',}}>投保人:</Text>
                             </View>
 
-                            <View style={{flex:5,padding:5,justifyContent:'center'}}>
-                                <TextInput
-                                    style={{height: 50,fontSize:16}}
-                                    onChangeText={(insurename) =>
-                                    {
-                                       this.state.insure.perName=insurename;
-                                       var insure =  this.state.insure;
-                                       this.setState({insure:insure});
-                                }}
-                                    value={this.state.insure.perName}
-                                    placeholder='谁交保费'
-                                    placeholderTextColor="#aaa"
-                                    underlineColorAndroid="transparent"
-                                />
-                            </View>
+                            {
+                                (insurer.perName!==undefined&&insurer.perName!==null)?
+                                    <View style={{flex:5,padding:5,justifyContent:'center'}}>
+                                        <Text style={{fontSize:16}}>{insurer.perName}</Text>
+                                    </View>:
+                                    <View style={{flex:5,padding:5,justifyContent:'center'}}>
+                                        <Text style={{fontSize:16}}>谁交保费</Text>
+                                    </View>
+
+                            }
 
                             <TouchableOpacity style={{flex:2,flexDirection:'row',justifyContent:'center',alignItems:'center'}}
                                               onPress={()=>{
+                                                  this.navigate2AppendLifeInsurer();
                                          console.log('选择投保人')
                                       }}>
                                 <View style={{flex:2,flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
@@ -147,24 +295,22 @@ class Life extends Component{
                             <View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
                                 <Text style={{fontSize:20,flex:3,textAlign:'left',}}>被保险人:</Text>
                             </View>
-                            <View style={{flex:5,padding:5,justifyContent:'center'}}>
-                                <TextInput
-                                    style={{height: 50,fontSize:16}}
-                                    onChangeText={(insurancedername) =>
-                                    {
-                                       this.state.insuranceder.perName=insurancedername;
-                                       var insuranceder =  this.state.insuranceder;
-                                       this.setState({insuranceder:insuranceder});
-                                }}
-                                    value={this.state.insuranceder.perName}
-                                    placeholder='谁享受保障'
-                                    placeholderTextColor="#aaa"
-                                    underlineColorAndroid="transparent"
-                                />
-                            </View>
+
+
+                            {
+                                (insuranceder.perName!==undefined&&insuranceder.perName!==null)?
+                                    <View style={{flex:5,padding:5,justifyContent:'center'}}>
+                                        <Text style={{fontSize:16}}>{insuranceder.perName}</Text>
+                                    </View>:
+                                    <View style={{flex:5,padding:5,justifyContent:'center'}}>
+                                        <Text style={{fontSize:16}}>谁享受保障</Text>
+                                    </View>
+
+                            }
 
                             <TouchableOpacity style={{flex:2,flexDirection:'row',justifyContent:'center',alignItems:'center'}}
                                               onPress={()=>{
+                                                  this.navigate2AppendLifeInsuranceder();
                                          console.log('选择被保险人')
                                       }}>
                                 <View style={{flex:2,flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
@@ -181,23 +327,21 @@ class Life extends Component{
                             <View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
                                 <Text style={{fontSize:20,flex:3,textAlign:'left',}}>受益人:</Text>
                             </View>
-                            <View style={{flex:5,padding:5,justifyContent:'center'}}>
-                                <TextInput
-                                    style={{height: 50,fontSize:16}}
-                                    onChangeText={(benefitername) =>
-                                    {
-                                       this.state.benefiter.perName=benefitername;
-                                       var benefiter =  this.state.benefiter;
-                                       this.setState({benefiter:benefiter});
-                                }}
-                                    value={this.state.benefiter.perName}
-                                    placeholder='谁领取保险金'
-                                    placeholderTextColor="#aaa"
-                                    underlineColorAndroid="transparent"
-                                />
-                            </View>
+
+                            {
+                                (benefiter.perName!==undefined&&benefiter.perName!==null)?
+                                    <View style={{flex:5,padding:5,justifyContent:'center'}}>
+                                        <Text style={{fontSize:16}}>{benefiter.perName}</Text>
+                                    </View>:
+                                    <View style={{flex:5,padding:5,justifyContent:'center'}}>
+                                        <Text style={{fontSize:16}}>谁领取保险金</Text>
+                                    </View>
+
+                            }
+
                             <TouchableOpacity style={{flex:2,flexDirection:'row',justifyContent:'center',alignItems:'center'}}
                                               onPress={()=>{
+                                                  this.navigate2AppendLifeBenefiter();
                                          console.log('选择受益人')
                                       }}>
                                 <View style={{flex:2,flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
@@ -349,6 +493,16 @@ class Life extends Component{
                         </View>
 
                     </View>
+
+
+                    <TouchableOpacity style={{height:50,width:180,flexDirection:'row',justifyContent:'center',alignItems:'center',
+                                  backgroundColor:'rgba(17, 17, 17, 0.6)',borderRadius:8,marginLeft:120}}
+                                      onPress={()=>{
+                                        this.onPressHandle();
+                                      }}>
+
+                        <Text >click me !</Text>
+                    </TouchableOpacity>
 
 
                     <TouchableOpacity style={{height:50,width:180,flexDirection:'row',justifyContent:'center',alignItems:'center',

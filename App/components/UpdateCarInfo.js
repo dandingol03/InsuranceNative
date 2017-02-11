@@ -30,7 +30,6 @@ import DatePicker from 'react-native-datepicker';
 import ScrollableTabView, {DefaultTabBar, ScrollableTabBar} from 'react-native-scrollable-tab-view';
 
 
-
 class UpdateCarInfo extends Component{
 
     goBack(){
