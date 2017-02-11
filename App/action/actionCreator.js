@@ -111,10 +111,48 @@ export let selectCarAction=function(car){
     }
 }
 
-export let fetchCarOrders=function (accessToken) {
+
+
+let setCarOrdersInHistory=(orders)=>{
+    return {
+        type:types.SET_CAR_HISTORY_ORDERS,
+        orders:orders
+    }
+}
+
+let setCarOrdersInPricedAndInPricing=(orders)=>{
+    return {
+        type:types.SET_CAR_PRICED_AND_PRICING_ORDERS,
+        orders:orders
+    }
+}
+
+let setCarOrdersInApplyed=(orders)=>{
+    return {
+        type:types.SET_CAR_APPLYED_ORDERS,
+        orders:orders
+    }
+}
+
+export let enableCarOrdersOnFresh=()=>{
+    return {
+        type:types.ENABLE_CARORDERS_ONFRESH
+    }
+}
+
+let disableCarOrdersOnFresh=()=>{
+    return {
+        type:types.DISABLE_CARORDERS_ONFRESH
+    }
+}
+
+
+
+
+export let fetchCarOrders=function (accessToken,cb) {
 
     return dispatch=> {
-
+        var pricedOrPricingOrders=[];
         Proxy.postes({
             url: Config.server + '/svr/request',
             headers: {
@@ -125,9 +163,60 @@ export let fetchCarOrders=function (accessToken) {
                 request: 'getCarOrdersInHistory'
             }
         }).then(function (json) {
-
+            var historyOrders=[];
+            if(json.re==1) {
+                historyOrders=json.data;
+            }
+            dispatch(setCarOrdersInHistory(historyOrders));
+            return Proxy.postes({
+                url: Config.server + '/svr/request',
+                headers: {
+                    'Authorization': "Bearer " + accessToken,
+                    'Content-Type': 'application/json'
+                },
+                body: {
+                    request: 'getCarOrderInPricedState'
+                }
+            });
+        }).then(function (json) {
+            if(json.re==1)
+            {
+                pricedOrPricingOrders=json.data;
+            }
+            return Proxy.postes({
+                url: Config.server + '/svr/request',
+                headers: {
+                    'Authorization': "Bearer " + accessToken,
+                    'Content-Type': 'application/json'
+                },
+                body: {
+                    request: 'getApplyedCarOrders'
+                }
+            });
+        }).then(function (json) {
+            var applyedOrders=[];
+            if(json.re==1)
+            {
+               if(json.data!==undefined&&json.data!==null)
+               {
+                   json.data.map(function (order,i) {
+                       if(order.orderState==2)
+                           pricedOrPricingOrders.push(order);
+                       if(order.orderState==1)
+                           applyedOrders.push(order);
+                   })
+               }
+            }
+            dispatch(setCarOrdersInPricedAndInPricing(pricedOrPricingOrders));
+            dispatch(setCarOrdersInApplyed(applyedOrders));
+            dispatch(disableCarOrdersOnFresh());
+            if(cb)
+                cb();
         }).catch(function (err) {
+            if(cb)
+                cb();
             alert(err);
         })
     }
+
 }

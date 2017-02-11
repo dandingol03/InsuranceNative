@@ -3,8 +3,7 @@
 import * as types from '../action/types';
 
 const initialState = {
-    carSelect: null,
-    orders:[]
+    carSelect: null
 };
 
 let user = (state = initialState, action) => {
@@ -16,11 +15,8 @@ let user = (state = initialState, action) => {
             return Object.assign({}, state, {
                 carSelect: action.car
             })
-        case types.FETCH_CAR_ORDERS:
-            return Object.assign({}, state, {
-                orders:action.orders
-            })
 
+            return state;
         default:
             return state;
     }
